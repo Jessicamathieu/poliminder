@@ -1,6 +1,9 @@
-import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-  redirect('/dashboard');
-  return null; // Or a loading spinner, but redirect is usually fast enough
+  return (
+    <div>
+      <h1>Welcome to PoliMinder</h1>
+      <p>Loading application...</p>
+    </div>
+  );
 }
