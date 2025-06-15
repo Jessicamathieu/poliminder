@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
-}
+/* La déclaration font-family globale pour body est maintenant gérée par Tailwind via la variable CSS --font-inter */
+/* body {
+  font-family: 'Inter', sans-serif; 
+} */
 
 @layer base {
   :root {
@@ -88,6 +89,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body; /* Applique font-body ici */
   }
 }
