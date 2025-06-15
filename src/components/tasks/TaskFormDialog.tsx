@@ -34,7 +34,7 @@ const taskSchema = z.object({
   location: z.string().optional(),
 });
 
-type TaskFormData = z.infer<typeof taskSchema>;
+export type TaskFormData = z.infer<typeof taskSchema>;
 
 interface TaskFormDialogProps {
   isOpen: boolean;

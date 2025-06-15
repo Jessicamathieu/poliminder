@@ -36,7 +36,7 @@ const appointmentSchema = z.object({
   status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled']).default('scheduled'),
 });
 
-type AppointmentFormData = z.infer<typeof appointmentSchema>;
+export type AppointmentFormData = z.infer<typeof appointmentSchema>;
 
 interface AppointmentFormDialogProps {
   isOpen: boolean;
