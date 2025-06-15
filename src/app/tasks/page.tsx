@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Task, Client, Employee } from '@/lib/types';
@@ -5,7 +6,7 @@ import TaskBoard from '@/components/tasks/TaskBoard';
 import TaskFormDialog from '@/components/tasks/TaskFormDialog';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 // Dummy data - replace with actual data fetching and state management
@@ -98,12 +99,12 @@ export default function TasksPage() {
     setIsFormOpen(true);
   };
 
-  const handleDeleteTask = (taskId: string) => {
+  const handleDeleteTask = useCallback((taskId: string) => {
     // In a real app, this would be an API call
-    setTasks(tasks.filter(task => task.id !== taskId));
-  };
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  }, [setTasks]);
 
-  const handleSubmitTask = async (data: any) => {
+  const handleSubmitTask = useCallback(async (data: any) => {
     // In a real app, this would be an API call
     console.log('Submitting task data:', data);
     const client = dummyClients.find(c => c.id === data.clientId);
@@ -116,13 +117,13 @@ export default function TasksPage() {
     };
 
     if (selectedTask) {
-      setTasks(tasks.map((task) => (task.id === selectedTask.id ? { ...selectedTask, ...taskWithNames, id: selectedTask.id } : task)));
+      setTasks(prevTasks => prevTasks.map((task) => (task.id === selectedTask.id ? { ...selectedTask, ...taskWithNames, id: selectedTask.id } : task)));
     } else {
-      setTasks([...tasks, { ...taskWithNames, id: String(Date.now()) }]);
+      setTasks(prevTasks => [...prevTasks, { ...taskWithNames, id: String(Date.now()) }]);
     }
-  };
+  }, [selectedTask, setTasks, dummyClients, dummyEmployees]);
 
-  const handleTaskStatusChange = (taskId: string, newStatus: Task['status']) => {
+  const handleTaskStatusChange = useCallback((taskId: string, newStatus: Task['status']) => {
     // In a real app, this would be an API call
     setTasks(prevTasks => 
       prevTasks.map(task => 
@@ -130,7 +131,7 @@ export default function TasksPage() {
       )
     );
     console.log(`Task ${taskId} status changed to ${newStatus}`);
-  };
+  }, [setTasks]);
 
   return (
     <div className="space-y-6">

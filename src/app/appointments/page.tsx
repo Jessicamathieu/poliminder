@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Appointment, Client, Employee, Service } from '@/lib/types';
@@ -5,7 +6,7 @@ import AppointmentCalendarView from '@/components/appointments/AppointmentCalend
 import AppointmentFormDialog from '@/components/appointments/AppointmentFormDialog';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 // Dummy data - replace with actual data fetching and state management
@@ -79,15 +80,15 @@ export default function AppointmentsPage() {
     setIsFormOpen(true);
   };
 
-  const handleSubmitAppointment = async (data: any) => {
+  const handleSubmitAppointment = useCallback(async (data: any) => {
     // In a real app, this would be an API call
     console.log('Submitting appointment data:', data);
     if (selectedAppointment) {
-      setAppointments(appointments.map((apt) => (apt.id === selectedAppointment.id ? { ...selectedAppointment, ...data, id: selectedAppointment.id } : apt)));
+      setAppointments(prevAppointments => prevAppointments.map((apt) => (apt.id === selectedAppointment.id ? { ...selectedAppointment, ...data, id: selectedAppointment.id } : apt)));
     } else {
-      setAppointments([...appointments, { ...data, id: String(Date.now()) }]);
+      setAppointments(prevAppointments => [...prevAppointments, { ...data, id: String(Date.now()) }]);
     }
-  };
+  }, [selectedAppointment, setAppointments]);
 
   return (
     <div className="space-y-6">
