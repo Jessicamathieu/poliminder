@@ -1,46 +1,46 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
-node_modules
-.pnp
+/node_modules
+/.pnp
 .pnp.js
 
-# Testing
-coverage
-
 # Next.js build output
-.next
-out
-
-# Production build artifacts
-build
+/.next/
+/out/
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Misc
-.DS_Store
-*.pem
+# Production Caches
+.next/cache/
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Optional eslint cache
+.eslintcache
 
-# Local Environment Variables
+# Optional Prettier cache
+.prettiercache
+
+# Optional SvelteKit cache
+.svelte-kit/
+
+# Optional MFL (Micro-Frontends League) cache
+.mf_cache/
+
+# Testing
+/coverage
+/.nyc_output
+
+# Environment Variables
 .env
-.env.local
+.env*.local
 .env.development.local
-.env.production.local
 .env.test.local
+.env.production.local
 
 # IDEs and editors
-.idea
+/.idea
 .project
 .classpath
 .c9/
@@ -48,19 +48,37 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
-# Cache and temporary files from VSCode, but keep shared settings if any.
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
 
-# Firebase
-.firebase
-firebase-debug.log
-firebase-debug.*.log
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# IDX specific
-.idx
+# Yarn
+yarn-error.log
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# pnpm
+pnpm-lock.yaml
+pnpm-debug.log
+
+# Deno
+deno.lock
+
+# Misc
+.npm
+/.cache
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
