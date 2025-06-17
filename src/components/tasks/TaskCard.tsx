@@ -1,9 +1,9 @@
 'use client';
 
 import type { Task } from '@/lib/types';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/common/card';
+import { Badge } from '@/components/common/badge';
+import { Button } from '@/components/common/button';
 import { Edit2, Trash2, MapPin, Phone, CalendarDays } from 'lucide-react';
 import { format } from 'date-fns';
 

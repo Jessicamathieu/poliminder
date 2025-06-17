@@ -1,7 +1,7 @@
 'use client';
 
 import type { Task, Client, Employee } from '@/lib/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,13 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+} from '@/components/common/dialog';
+import { Input } from '@/components/common/input';
+import { Label } from '@/components/common/label';
+import { Textarea } from '@/components/common/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/common/popover';
+import { Calendar } from '@/components/common/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/common/select';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';

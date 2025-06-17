@@ -1,6 +1,6 @@
 import type { ChatMessage } from '@/lib/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/common/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/common/avatar';
 import { Bot, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';

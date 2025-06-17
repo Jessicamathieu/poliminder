@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/common/card";
+import { Button } from "@/components/common/button";
 import { RefreshCw, Settings } from "lucide-react";
 import Image from "next/image";
 

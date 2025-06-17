@@ -1,15 +1,15 @@
 'use client';
 
 import type { Service, Item } from '@/lib/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/common/tabs';
+import { Button } from '@/components/common/button';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/common/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/common/table';
 import { PlusCircle, Edit2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import ServiceFormDialog from './ServiceFormDialog';
 import ItemFormDialog from './ItemFormDialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/common/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 // Dummy data - replace with actual data fetching and state management

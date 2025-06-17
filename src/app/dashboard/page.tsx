@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/common/card";
+import { Button } from "@/components/common/button";
 import { CalendarCheck, ListTodo, PlusCircle, MessageSquareHeart, Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";

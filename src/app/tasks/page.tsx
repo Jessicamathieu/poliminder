@@ -5,7 +5,7 @@ import type { Task, Client, Employee } from '@/lib/types';
 import TaskBoard from '@/components/tasks/TaskBoard';
 import TaskFormDialog from '@/components/tasks/TaskFormDialog';
 import type { TaskFormData } from '@/components/tasks/TaskFormDialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import { PlusCircle } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
