@@ -38,10 +38,10 @@ export default function IntelligentSchedulingFormCard() {
     try {
       const response = await getIntelligentSchedulingRecommendations(data);
       setResult(response);
-      toast({ title: 'Scheduling Recommendation Ready', description: 'AI has provided a suggestion.' });
+      toast({ title: 'Recommandation prête', description: "L'IA a proposé une suggestion." });
     } catch (error) {
       console.error('Error getting scheduling recommendations:', error);
-      toast({ title: 'Error', description: 'Failed to get recommendations.', variant: 'destructive' });
+      toast({ title: 'Erreur', description: 'Impossible d\'obtenir des recommandations.', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -50,46 +50,46 @@ export default function IntelligentSchedulingFormCard() {
   return (
     <Card className="shadow-lg w-full">
       <CardHeader>
-        <CardTitle className="flex items-center text-xl"><CalendarCog className="mr-2 h-6 w-6 text-accent" /> Intelligent Scheduling Recommendations</CardTitle>
-        <CardDescription>Get AI-powered suggestions for optimal scheduling based on various factors.</CardDescription>
+        <CardTitle className="flex items-center text-xl"><CalendarCog className="mr-2 h-6 w-6 text-accent" /> Recommandations de planification intelligente</CardTitle>
+        <CardDescription>Obtenez des suggestions optimisées grâce à l'IA.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="employeeAvailabilityIs">Employee Availability</Label>
-            <Input id="employeeAvailabilityIs" {...register('employeeAvailability')} placeholder="e.g., Mon-Fri 9am-5pm, unavailable Wed afternoon" />
+            <Label htmlFor="employeeAvailabilityIs">Disponibilité de l'employé</Label>
+            <Input id="employeeAvailabilityIs" {...register('employeeAvailability')} placeholder="ex. Lun-ven 9h-17h, indisponible mercredi après-midi" />
             {errors.employeeAvailability && <p className="text-sm text-destructive">{errors.employeeAvailability.message}</p>}
           </div>
           <div>
-            <Label htmlFor="locationIs">Appointment Location</Label>
-            <Input id="locationIs" {...register('location')} placeholder="e.g., Downtown Anytown, or specific address" />
+            <Label htmlFor="locationIs">Lieu du rendez-vous</Label>
+            <Input id="locationIs" {...register('location')} placeholder="ex. centre-ville ou adresse précise" />
             {errors.location && <p className="text-sm text-destructive">{errors.location.message}</p>}
           </div>
           <div>
-            <Label htmlFor="serviceTypeIs">Service Type</Label>
-            <Input id="serviceTypeIs" {...register('serviceType')} placeholder="e.g., Exterior Cleaning, Window Washing" />
+            <Label htmlFor="serviceTypeIs">Type de service</Label>
+            <Input id="serviceTypeIs" {...register('serviceType')} placeholder="ex. Nettoyage extérieur, lavage de vitres" />
             {errors.serviceType && <p className="text-sm text-destructive">{errors.serviceType.message}</p>}
           </div>
           <div>
-            <Label htmlFor="workloadIs">Employee's Current Workload</Label>
-            <Input id="workloadIs" {...register('workload')} placeholder="e.g., Light, 3 appointments today" />
+            <Label htmlFor="workloadIs">Charge actuelle de l'employé</Label>
+            <Input id="workloadIs" {...register('workload')} placeholder="ex. Légère, 3 rendez-vous aujourd'hui" />
             {errors.workload && <p className="text-sm text-destructive">{errors.workload.message}</p>}
           </div>
            <div>
-            <Label htmlFor="skillsIs">Employee's Skills</Label>
-            <Input id="skillsIs" {...register('skills')} placeholder="e.g., Gutter cleaning, Pressure washing, Ladder certified" />
+            <Label htmlFor="skillsIs">Compétences de l'employé</Label>
+            <Input id="skillsIs" {...register('skills')} placeholder="ex. Nettoyage de gouttières, haute pression, travail en hauteur" />
             {errors.skills && <p className="text-sm text-destructive">{errors.skills.message}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-start space-y-4">
           <Button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-accent hover:bg-accent/90">
-            {isLoading ? 'Getting Recommendations...' : 'Get Recommendations'}
+            {isLoading ? 'Recherche...' : 'Obtenir des recommandations'}
           </Button>
           {result && (
             <div className="w-full p-4 border rounded-md bg-muted">
-              <h4 className="font-semibold mb-1">Recommendation:</h4>
+              <h4 className="font-semibold mb-1">Recommandation :</h4>
               <p className="text-sm mb-2">{result.recommendation}</p>
-              <h4 className="font-semibold mb-1">Reason:</h4>
+              <h4 className="font-semibold mb-1">Raison :</h4>
               <p className="text-sm">{result.reason}</p>
             </div>
           )}

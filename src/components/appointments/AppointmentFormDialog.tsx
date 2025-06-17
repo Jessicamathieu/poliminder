@@ -77,11 +77,11 @@ export default function AppointmentFormDialog({
   const handleFormSubmit: SubmitHandler<AppointmentFormData> = async (data) => {
     try {
       await onSubmit(data);
-      toast({ title: appointment ? "Appointment Updated" : "Appointment Created", description: "The appointment has been saved successfully." });
+      toast({ title: appointment ? "Rendez-vous mis à jour" : "Rendez-vous créé", description: "Le rendez-vous a été enregistré avec succès." });
       reset();
       onClose();
     } catch (error) {
-      toast({ title: "Error", description: "Failed to save appointment. Please try again.", variant: "destructive" });
+      toast({ title: "Erreur", description: "Impossible d'enregistrer le rendez-vous. Veuillez réessayer.", variant: "destructive" });
     }
   };
 
@@ -89,18 +89,18 @@ export default function AppointmentFormDialog({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>{appointment ? 'Edit Appointment' : 'Create New Appointment'}</DialogTitle>
+          <DialogTitle>{appointment ? 'Modifier le rendez-vous' : 'Créer un rendez-vous'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Titre</Label>
             <Input id="title" {...register('title')} />
             {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="start">Start Date & Time</Label>
+              <Label htmlFor="start">Date et heure de début</Label>
               <Controller
                 name="start"
                 control={control}
@@ -115,7 +115,7 @@ export default function AppointmentFormDialog({
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "PPPp") : <span>Pick a date</span>}
+                        {field.value ? format(field.value, "PPPp") : <span>Choisissez une date</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -137,7 +137,7 @@ export default function AppointmentFormDialog({
               {errors.start && <p className="text-sm text-destructive">{errors.start.message}</p>}
             </div>
             <div>
-              <Label htmlFor="end">End Date & Time</Label>
+              <Label htmlFor="end">Date et heure de fin</Label>
                <Controller
                 name="end"
                 control={control}
@@ -152,7 +152,7 @@ export default function AppointmentFormDialog({
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "PPPp") : <span>Pick a date</span>}
+                        {field.value ? format(field.value, "PPPp") : <span>Choisissez une date</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -182,7 +182,7 @@ export default function AppointmentFormDialog({
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger><SelectValue placeholder="Select a client" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Choisir un client" /></SelectTrigger>
                   <SelectContent>
                     {clients.map(client => <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>)}
                   </SelectContent>
@@ -192,13 +192,13 @@ export default function AppointmentFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="employeeId">Employee</Label>
+            <Label htmlFor="employeeId">Employé</Label>
              <Controller
               name="employeeId"
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger><SelectValue placeholder="Select an employee" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Choisir un employé" /></SelectTrigger>
                   <SelectContent>
                     {employees.map(emp => <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>)}
                   </SelectContent>
@@ -214,7 +214,7 @@ export default function AppointmentFormDialog({
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger><SelectValue placeholder="Select a service" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Choisir un service" /></SelectTrigger>
                   <SelectContent>
                     {services.map(service => <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>)}
                   </SelectContent>
@@ -224,9 +224,9 @@ export default function AppointmentFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location">Lieu</Label>
             <div className="flex items-center gap-2">
-              <Input id="location" {...register('location')} placeholder="e.g., 123 Main St, Anytown" />
+              <Input id="location" {...register('location')} placeholder="ex. 123 rue Principale, Ville" />
               {appointment?.location && (
                  <Button variant="outline" size="icon" asChild>
                   <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(appointment.location)}`} target="_blank" rel="noopener noreferrer">
@@ -243,20 +243,20 @@ export default function AppointmentFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">Statut</Label>
             <Controller
                 name="status"
                 control={control}
                 render={({ field }) => (
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
+                            <SelectValue placeholder="Choisir le statut" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="scheduled">Scheduled</SelectItem>
-                            <SelectItem value="confirmed">Confirmed</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                            <SelectItem value="scheduled">Planifié</SelectItem>
+                            <SelectItem value="confirmed">Confirmé</SelectItem>
+                            <SelectItem value="completed">Terminé</SelectItem>
+                            <SelectItem value="cancelled">Annulé</SelectItem>
                         </SelectContent>
                     </Select>
                 )}
@@ -267,7 +267,7 @@ export default function AppointmentFormDialog({
             <div className="mt-2">
                <Button variant="outline" size="sm" asChild>
                 <a href={`tel:${clients.find(c => c.id === appointment.clientId)?.phone}`}>
-                  <Phone className="mr-2 h-4 w-4" /> Call Client ({clients.find(c => c.id === appointment.clientId)?.phone})
+                  <Phone className="mr-2 h-4 w-4" /> Appeler le client ({clients.find(c => c.id === appointment.clientId)?.phone})
                 </a>
               </Button>
             </div>
@@ -276,10 +276,10 @@ export default function AppointmentFormDialog({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">Annuler</Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (appointment ? 'Saving...' : 'Creating...') : (appointment ? 'Save Changes' : 'Create Appointment')}
+              {isSubmitting ? (appointment ? 'Enregistrement...' : 'Création...') : (appointment ? 'Enregistrer' : 'Créer le rendez-vous')}
             </Button>
           </DialogFooter>
         </form>

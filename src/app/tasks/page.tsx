@@ -167,9 +167,9 @@ export default function TasksPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-primary font-headline">Task Tracking</h1>
+        <h1 className="text-3xl font-bold text-primary font-headline">Suivi des tâches</h1>
         <Button onClick={handleAddTask} variant="default">
-          <PlusCircle className="mr-2 h-5 w-5" /> New Task
+          <PlusCircle className="mr-2 h-5 w-5" /> Nouvelle tâche
         </Button>
       </div>
 

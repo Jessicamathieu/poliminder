@@ -128,7 +128,7 @@ export default function TaskBoard({ initialTasks, clients, onEditTask, onDeleteT
                   />
                 ))}
                 {tasksByStatus[status]?.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-8">No tasks in this status.</p>
+                  <p className="text-sm text-muted-foreground text-center py-8">Aucune tâche dans ce statut.</p>
                 )}
               </div>
             </SortableContext>

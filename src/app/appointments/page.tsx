@@ -138,9 +138,9 @@ export default function AppointmentsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-primary font-headline">Appointment Calendar</h1>
+        <h1 className="text-3xl font-bold text-primary font-headline">Calendrier des rendez-vous</h1>
         <Button onClick={handleAddAppointment} variant="default">
-          <PlusCircle className="mr-2 h-5 w-5" /> New Appointment
+          <PlusCircle className="mr-2 h-5 w-5" /> Nouveau rendez-vous
         </Button>
       </div>
 

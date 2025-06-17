@@ -68,7 +68,7 @@ export default function TaskFormDialog({
       reset();
       onClose();
     } catch (error) {
-      toast({ title: "Error", description: "Failed to save task. Please try again.", variant: "destructive" });
+      toast({ title: "Erreur", description: "Impossible d'enregistrer la tâche. Veuillez réessayer.", variant: "destructive" });
     }
   };
 
@@ -76,11 +76,11 @@ export default function TaskFormDialog({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>{task ? 'Edit Task' : 'Create New Task'}</DialogTitle>
+          <DialogTitle>{task ? 'Modifier la tâche' : 'Créer une tâche'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Titre</Label>
             <Input id="title" {...register('title')} />
             {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
           </div>
@@ -92,7 +92,7 @@ export default function TaskFormDialog({
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="deadline">Deadline</Label>
+              <Label htmlFor="deadline">Échéance</Label>
               <Controller
                 name="deadline"
                 control={control}
@@ -107,7 +107,7 @@ export default function TaskFormDialog({
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                        {field.value ? format(field.value, "PPP") : <span>Choisissez une date</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -123,18 +123,18 @@ export default function TaskFormDialog({
               />
             </div>
             <div>
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Statut</Label>
               <Controller
                 name="status"
                 control={control}
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder="Choisir le statut" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="todo">To Do</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="blocked">Blocked</SelectItem>
+                      <SelectItem value="todo">À faire</SelectItem>
+                      <SelectItem value="in-progress">En cours</SelectItem>
+                      <SelectItem value="completed">Terminé</SelectItem>
+                      <SelectItem value="blocked">Bloqué</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -143,13 +143,13 @@ export default function TaskFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="assignedTo">Assign to Employee</Label>
+            <Label htmlFor="assignedTo">Assigner à un employé</Label>
             <Controller
               name="assignedTo"
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Choisir un employé" /></SelectTrigger>
                   <SelectContent>
                     {employees.map(emp => <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>)}
                   </SelectContent>
@@ -159,13 +159,13 @@ export default function TaskFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="clientId">Assign to Client</Label>
+            <Label htmlFor="clientId">Assigner à un client</Label>
             <Controller
               name="clientId"
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Choisir un client" /></SelectTrigger>
                   <SelectContent>
                     {clients.map(client => <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>)}
                   </SelectContent>
@@ -175,16 +175,16 @@ export default function TaskFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="location">Location</Label>
-            <Input id="location" {...register('location')} placeholder="e.g., 456 Oak Ave, Anytown" />
+            <Label htmlFor="location">Lieu</Label>
+            <Input id="location" {...register('location')} placeholder="ex. 456 rue Oak, Ville" />
           </div>
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">Annuler</Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (task ? 'Saving...' : 'Creating...') : (task ? 'Save Changes' : 'Create Task')}
+              {isSubmitting ? (task ? 'Enregistrement...' : 'Création...') : (task ? 'Enregistrer' : 'Créer la tâche')}
             </Button>
           </DialogFooter>
         </form>

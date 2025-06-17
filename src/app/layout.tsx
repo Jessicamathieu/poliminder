@@ -22,12 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="fr" className={`${inter.variable}`}>
       <head>
         {/* Les balises link pour Google Fonts ont été supprimées et remplacées par next/font */}
       </head>
       <body className="font-body antialiased">
-        <I18nProvider locale="en">
+        <I18nProvider locale="fr">
           <AppLayout>{children}</AppLayout>
         </I18nProvider>
         <Toaster />

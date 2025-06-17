@@ -62,10 +62,10 @@ export default function AutomatedTaskAssignmentFormCard() {
       };
       const response = await assignTasksToEmployees(formattedData);
       setResult(response);
-      toast({ title: 'Tasks Assignments Processed', description: 'AI has assigned tasks.' });
+      toast({ title: 'Attribution terminée', description: "L'IA a attribué les tâches." });
     } catch (error) {
       console.error('Error assigning tasks:', error);
-      toast({ title: 'Error', description: 'Failed to assign tasks.', variant: 'destructive' });
+      toast({ title: 'Erreur', description: "Échec de l'attribution des tâches.", variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -74,29 +74,29 @@ export default function AutomatedTaskAssignmentFormCard() {
   return (
     <Card className="shadow-lg w-full">
       <CardHeader>
-        <CardTitle className="flex items-center text-xl"><UsersRound className="mr-2 h-6 w-6 text-accent" /> Automated Task Assignment</CardTitle>
-        <CardDescription>Let AI assign tasks to employees based on skills, location, and workload.</CardDescription>
+        <CardTitle className="flex items-center text-xl"><UsersRound className="mr-2 h-6 w-6 text-accent" /> Attribution automatique des tâches</CardTitle>
+        <CardDescription>Laissez l'IA attribuer les tâches selon les compétences, la localisation et la charge.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-6">
           {/* Tasks Section */}
           <div className="space-y-4 p-4 border rounded-md">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Tasks to Assign</h3>
+              <h3 className="text-lg font-semibold">Tâches à attribuer</h3>
               <Button type="button" variant="outline" size="sm" onClick={() => appendTask({ taskId: `T00${taskFields.length + 1}`, description: '', location: '', requiredSkills: '', deadline: '' })}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Task
+                <PlusCircle className="mr-2 h-4 w-4" /> Ajouter une tâche
               </Button>
             </div>
             {taskFields.map((field, index) => (
               <div key={field.id} className="p-3 border rounded-md space-y-2 relative">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <div><Label>Task ID</Label><Input {...register(`tasks.${index}.taskId`)} /></div>
-                  <div><Label>Deadline</Label><Input type="date" {...register(`tasks.${index}.deadline`)} /></div>
+                <div><Label>ID de tâche</Label><Input {...register(`tasks.${index}.taskId`)} /></div>
+                  <div><Label>Échéance</Label><Input type="date" {...register(`tasks.${index}.deadline`)} /></div>
                 </div>
                 <div><Label>Description</Label><Textarea {...register(`tasks.${index}.description`)} /></div>
-                <div><Label>Location</Label><Input {...register(`tasks.${index}.location`)} /></div>
-                <div><Label>Required Skills (comma-separated)</Label><Input {...register(`tasks.${index}.requiredSkills`)} /></div>
-                {errors.tasks?.[index] && <p className="text-xs text-destructive">Please fill all task fields.</p>}
+                <div><Label>Lieu</Label><Input {...register(`tasks.${index}.location`)} /></div>
+                <div><Label>Compétences requises (séparées par des virgules)</Label><Input {...register(`tasks.${index}.requiredSkills`)} /></div>
+                {errors.tasks?.[index] && <p className="text-xs text-destructive">Veuillez remplir tous les champs de la tâche.</p>}
                 <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1 text-destructive" onClick={() => removeTask(index)}><Trash2 className="h-4 w-4" /></Button>
               </div>
             ))}
@@ -106,21 +106,21 @@ export default function AutomatedTaskAssignmentFormCard() {
           {/* Employees Section */}
           <div className="space-y-4 p-4 border rounded-md">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Available Employees</h3>
+              <h3 className="text-lg font-semibold">Employés disponibles</h3>
               <Button type="button" variant="outline" size="sm" onClick={() => appendEmployee({ employeeId: `E00${employeeFields.length + 1}`, name: '', location: '', skills: '', currentWorkload: 0 })}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Employee
+                <PlusCircle className="mr-2 h-4 w-4" /> Ajouter un employé
               </Button>
             </div>
             {employeeFields.map((field, index) => (
               <div key={field.id} className="p-3 border rounded-md space-y-2 relative">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <div><Label>Employee ID</Label><Input {...register(`employees.${index}.employeeId`)} /></div>
-                  <div><Label>Name</Label><Input {...register(`employees.${index}.name`)} /></div>
-                  <div><Label>Location</Label><Input {...register(`employees.${index}.location`)} /></div>
-                  <div><Label>Current Workload</Label><Input type="number" {...register(`employees.${index}.currentWorkload`)} /></div>
+                  <div><Label>ID employé</Label><Input {...register(`employees.${index}.employeeId`)} /></div>
+                  <div><Label>Nom</Label><Input {...register(`employees.${index}.name`)} /></div>
+                  <div><Label>Lieu</Label><Input {...register(`employees.${index}.location`)} /></div>
+                  <div><Label>Charge actuelle</Label><Input type="number" {...register(`employees.${index}.currentWorkload`)} /></div>
                 </div>
-                <div><Label>Skills (comma-separated)</Label><Input {...register(`employees.${index}.skills`)} /></div>
-                {errors.employees?.[index] && <p className="text-xs text-destructive">Please fill all employee fields.</p>}
+                <div><Label>Compétences (séparées par des virgules)</Label><Input {...register(`employees.${index}.skills`)} /></div>
+                {errors.employees?.[index] && <p className="text-xs text-destructive">Veuillez remplir tous les champs de l'employé.</p>}
                 <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1 text-destructive" onClick={() => removeEmployee(index)}><Trash2 className="h-4 w-4" /></Button>
               </div>
             ))}
@@ -129,29 +129,29 @@ export default function AutomatedTaskAssignmentFormCard() {
         </CardContent>
         <CardFooter className="flex flex-col items-start space-y-4">
           <Button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-accent hover:bg-accent/90">
-            {isLoading ? 'Assigning Tasks...' : 'Assign Tasks Automatically'}
+            {isLoading ? 'Attribution...' : 'Attribuer automatiquement'}
           </Button>
           {result && (
             <div className="w-full p-4 border rounded-md bg-muted">
-              <h4 className="font-semibold mb-2">Assignment Results:</h4>
+              <h4 className="font-semibold mb-2">Résultats :</h4>
               {result.assignments.length > 0 && (
                 <>
-                  <h5 className="font-medium mt-2">Assigned Tasks:</h5>
+                  <h5 className="font-medium mt-2">Tâches attribuées :</h5>
                   <ul className="list-disc list-inside text-sm space-y-1">
-                    {result.assignments.map(a => <li key={`${a.taskId}-${a.employeeId}`}>Task {a.taskId} to Employee {a.employeeId} (Reason: {a.reason})</li>)}
+                    {result.assignments.map(a => <li key={`${a.taskId}-${a.employeeId}`}>Tâche {a.taskId} pour employé {a.employeeId} (Raison : {a.reason})</li>)}
                   </ul>
                 </>
               )}
               {result.unassignedTasks.length > 0 && (
                  <>
-                  <h5 className="font-medium mt-2 text-destructive">Unassigned Tasks:</h5>
+                  <h5 className="font-medium mt-2 text-destructive">Tâches non attribuées :</h5>
                   <ul className="list-disc list-inside text-sm space-y-1">
-                    {result.unassignedTasks.map(taskId => <li key={taskId}>Task {taskId}</li>)}
+                    {result.unassignedTasks.map(taskId => <li key={taskId}>Tâche {taskId}</li>)}
                   </ul>
                 </>
               )}
               {result.assignments.length === 0 && result.unassignedTasks.length === 0 && (
-                <p className="text-sm">No tasks or employees provided, or no assignments could be made.</p>
+                <p className="text-sm">Aucune tâche ou employé fourni, ou aucune attribution possible.</p>
               )}
             </div>
           )}
