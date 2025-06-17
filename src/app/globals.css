@@ -9,20 +9,20 @@
 
 @layer base {
   :root {
-    --background: 0 0% 88%; /* #e0e0e0 */
-    --foreground: 0 0% 15%; /* Dark Gray for text on light gray */
+    --background: 0 0% 100%; /* #ffffff */
+    --foreground: 0 0% 100%; /* #ffffff */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
     --primary: 230 79% 52%; /* #2743e3 */
     --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 230 79% 90%; /* Lighter blue */
-    --secondary-foreground: 230 79% 30%; /* Darker blue for text on light blue */
+    --secondary: 60 100% 50%; /* #ffff00 */
+    --secondary-foreground: 0 0% 0%; /* Black for contrast */
     --muted: 0 0% 92%;
     --muted-foreground: 0 0% 40%;
-    --accent: 27 100% 57%; /* #ff9026 */
-    --accent-foreground: 0 0% 100%; /* White */
+    --accent: 230 79% 52%; /* #2743e3 */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 80%;
@@ -38,28 +38,28 @@
     /* Sidebar specific colors */
     --sidebar-background: 230 60% 25%; /* Darker shade of primary blue */
     --sidebar-foreground: 230 20% 90%; /* Light, slightly bluish gray for text */
-    --sidebar-primary: 27 100% 57%; /* Accent orange for active links/highlights */
+    --sidebar-primary: 230 79% 52%; /* #2743e3 */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
     --sidebar-accent: 230 60% 35%; /* Slightly lighter shade of sidebar background for hover */
     --sidebar-accent-foreground: 230 20% 95%; /* Lighter version of sidebar foreground */
     --sidebar-border: 230 60% 20%; /* Even darker shade of sidebar background for borders */
-    --sidebar-ring: 27 100% 57%; /* Accent orange */
+    --sidebar-ring: 230 79% 52%;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%; /* #ffffff */
+    --foreground: 0 0% 100%; /* #ffffff */
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 230 79% 52%; /* #2743e3 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 230 79% 20%; /* Darker blue for dark mode */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 60 100% 50%; /* #ffff00 */
+    --secondary-foreground: 0 0% 0%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 27 100% 57%; /* #ff9026 */
+    --accent: 230 79% 52%; /* #2743e3 */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -75,12 +75,12 @@
     /* Dark Sidebar specific colors */
     --sidebar-background: 230 40% 15%; 
     --sidebar-foreground: 230 15% 85%;
-    --sidebar-primary: 27 100% 57%; 
+    --sidebar-primary: 230 79% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 230 40% 25%;
     --sidebar-accent-foreground: 230 15% 90%;
     --sidebar-border: 230 40% 10%;
-    --sidebar-ring: 27 100% 57%;
+    --sidebar-ring: 230 79% 52%;
   }
 }
 
