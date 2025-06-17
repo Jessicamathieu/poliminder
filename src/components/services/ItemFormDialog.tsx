@@ -52,11 +52,11 @@ export default function ItemFormDialog({
   const handleFormSubmit: SubmitHandler<ItemFormData> = async (data) => {
      try {
       await onSubmit(data);
-      toast({ title: item ? "Item Updated" : "Item Created", description: "The item has been saved successfully." });
+      toast({ title: item ? "Article mis à jour" : "Article créé", description: "L'article a été enregistré avec succès." });
       reset();
       onClose();
     } catch (error) {
-      toast({ title: "Error", description: "Failed to save item. Please try again.", variant: "destructive" });
+      toast({ title: "Erreur", description: "Impossible d'enregistrer l'article. Veuillez réessayer.", variant: "destructive" });
     }
   };
 
@@ -64,11 +64,11 @@ export default function ItemFormDialog({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{item ? 'Edit Item' : 'Create New Item'}</DialogTitle>
+          <DialogTitle>{item ? 'Modifier l\'article' : 'Créer un article'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Item Name</Label>
+            <Label htmlFor="name">Nom de l'article</Label>
             <Input id="name" {...register('name')} />
             {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
           </div>
@@ -80,12 +80,12 @@ export default function ItemFormDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">Prix ($)</Label>
               <Input id="price" type="number" step="0.01" {...register('price')} />
               {errors.price && <p className="text-sm text-destructive">{errors.price.message}</p>}
             </div>
             <div>
-              <Label htmlFor="stock">Stock (Optional)</Label>
+              <Label htmlFor="stock">Stock (optionnel)</Label>
               <Input id="stock" type="number" {...register('stock')} />
                {errors.stock && <p className="text-sm text-destructive">{errors.stock.message}</p>}
             </div>
@@ -93,10 +93,10 @@ export default function ItemFormDialog({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">Annuler</Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (item ? 'Saving...' : 'Creating...') : (item ? 'Save Changes' : 'Create Item')}
+              {isSubmitting ? (item ? 'Enregistrement...' : 'Création...') : (item ? 'Enregistrer' : 'Créer l\'article')}
             </Button>
           </DialogFooter>
         </form>

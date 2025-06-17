@@ -23,7 +23,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg font-medium">Upcoming Appointments</CardTitle>
+            <CardTitle className="text-lg font-medium">Rendez-vous à venir</CardTitle>
             <CalendarCheck className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
@@ -37,17 +37,17 @@ export default function DashboardPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">No upcoming appointments.</p>
+              <p className="text-sm text-muted-foreground">Aucun rendez-vous à venir.</p>
             )}
             <Button variant="outline" size="sm" className="mt-4 w-full" asChild>
-              <Link href="/appointments">View Calendar</Link>
+              <Link href="/appointments">Voir le calendrier</Link>
             </Button>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg font-medium">Open Tasks</CardTitle>
+            <CardTitle className="text-lg font-medium">Tâches ouvertes</CardTitle>
             <ListTodo className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
@@ -56,33 +56,33 @@ export default function DashboardPage() {
                 {openTasks.map((task) => (
                   <li key={task.id} className="text-sm p-2 border-b last:border-b-0">
                     <p className="font-semibold">{task.title}</p>
-                    <p className="text-muted-foreground">Deadline: {task.deadline}</p>
+                    <p className="text-muted-foreground">Échéance : {task.deadline}</p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">No open tasks.</p>
+              <p className="text-sm text-muted-foreground">Aucune tâche ouverte.</p>
             )}
             <Button variant="outline" size="sm" className="mt-4 w-full" asChild>
-              <Link href="/tasks">Manage Tasks</Link>
+              <Link href="/tasks">Gérer les tâches</Link>
             </Button>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg font-medium">Quick Actions</CardTitle>
+            <CardTitle className="text-lg font-medium">Actions rapides</CardTitle>
             <PlusCircle className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
             <Button variant="default" className="w-full" asChild>
-              <Link href="/appointments?action=new">New Appointment</Link>
+              <Link href="/appointments?action=new">Nouveau rendez-vous</Link>
             </Button>
             <Button variant="default" className="w-full" asChild>
-              <Link href="/tasks?action=new">New Task</Link>
+              <Link href="/tasks?action=new">Nouvelle tâche</Link>
             </Button>
             <Button variant="outline" className="w-full col-span-2" asChild>
-              <Link href="/services">Manage Services</Link>
+              <Link href="/services">Gérer les services</Link>
             </Button>
           </CardContent>
         </Card>
@@ -93,19 +93,19 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium">
               <MessageSquareHeart className="h-5 w-5 text-accent" />
-              Boost Your Reviews!
+              Améliorez vos avis !
             </CardTitle>
             <CardDescription>
-              Easily send satisfaction review requests to your clients.
+              Envoyez facilement des demandes d'avis à vos clients.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Image src="https://placehold.co/600x300.png" alt="Customer review illustration" width={600} height={300} className="rounded-md mb-4" data-ai-hint="customer review marketing" />
             <p className="text-sm mb-4">
-              After completing a service, send a personalized thank you message and a direct link to your Google Reviews page to encourage feedback.
+              Après avoir terminé un service, envoyez un message de remerciement personnalisé et un lien direct vers votre page Google Reviews pour encourager les retours.
             </p>
             <Button variant="accent" className="w-full" asChild>
-              <Link href="/ai-tools#satisfaction-review">Send Review Request</Link>
+              <Link href="/ai-tools#satisfaction-review">Envoyer la demande d'avis</Link>
             </Button>
           </CardContent>
         </Card>
@@ -114,19 +114,19 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium">
               <Zap className="h-5 w-5 text-accent" />
-              AI-Powered Efficiency
+              Efficacité grâce à l'IA
             </CardTitle>
             <CardDescription>
-              Leverage AI for smarter scheduling and task assignment.
+              Exploitez l'IA pour une planification et une attribution des tâches plus intelligentes.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Image src="https://placehold.co/600x300.png" alt="AI assistant illustration" width={600} height={300} className="rounded-md mb-4" data-ai-hint="artificial intelligence technology" />
             <p className="text-sm mb-4">
-              Our intelligent tools help you optimize schedules, assign tasks effectively, and provide instant customer support through our AI chatbot.
+              Nos outils intelligents vous aident à optimiser les plannings, assigner les tâches efficacement et fournir un support client instantané grâce à notre chatbot IA.
             </p>
             <Button variant="accent" className="w-full" asChild>
-              <Link href="/ai-tools">Explore AI Tools</Link>
+              <Link href="/ai-tools">Découvrir les outils IA</Link>
             </Button>
           </CardContent>
         </Card>

@@ -35,14 +35,14 @@ export default function TaskCard({ task, onEdit, onDelete, clientPhone }: TaskCa
         </div>
         {task.deadline && (
           <p className="text-xs text-muted-foreground flex items-center">
-            <CalendarDays className="h-3 w-3 mr-1" /> Deadline: {format(new Date(task.deadline), 'PP')}
+            <CalendarDays className="h-3 w-3 mr-1" /> Échéance : {format(new Date(task.deadline), 'PP')}
           </p>
         )}
       </CardHeader>
       <CardContent className="text-sm space-y-2">
         {task.description && <p className="text-muted-foreground">{task.description}</p>}
-        {task.clientName && <p>Client: {task.clientName}</p>}
-        {task.assignedToName && <p>Assigned to: {task.assignedToName}</p>}
+        {task.clientName && <p>Client : {task.clientName}</p>}
+        {task.assignedToName && <p>Assigné à : {task.assignedToName}</p>}
         {task.location && (
           <div className="flex items-center text-muted-foreground">
             <MapPin className="h-4 w-4 mr-1 shrink-0" />
@@ -57,7 +57,7 @@ export default function TaskCard({ task, onEdit, onDelete, clientPhone }: TaskCa
         {clientPhone && (
            <Button variant="outline" size="sm" className="mt-1 text-xs" asChild>
              <a href={`tel:${clientPhone}`}>
-               <Phone className="mr-1 h-3 w-3" /> Call Client
+               <Phone className="mr-1 h-3 w-3" /> Appeler le client
              </a>
            </Button>
         )}

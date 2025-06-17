@@ -83,25 +83,25 @@ export default function ServiceManagementTabs() {
     <Tabs defaultValue="services" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="services">Services</TabsTrigger>
-        <TabsTrigger value="items">Items</TabsTrigger>
+        <TabsTrigger value="items">Articles</TabsTrigger>
       </TabsList>
       <TabsContent value="services">
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Manage Services</CardTitle>
-              <CardDescription>Add, edit, or delete services offered.</CardDescription>
+              <CardTitle>Gérer les services</CardTitle>
+              <CardDescription>Ajouter, modifier ou supprimer les services proposés.</CardDescription>
             </div>
-            <Button onClick={handleAddService}><PlusCircle className="mr-2 h-4 w-4" /> Add Service</Button>
+            <Button onClick={handleAddService}><PlusCircle className="mr-2 h-4 w-4" /> Ajouter un service</Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Associated Items</TableHead>
+                  <TableHead>Nom</TableHead>
+                  <TableHead>Prix</TableHead>
+                  <TableHead>Durée</TableHead>
+                  <TableHead>Articles associés</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -114,7 +114,7 @@ export default function ServiceManagementTabs() {
                     <TableCell>
                       {service.associatedItemIds && service.associatedItemIds.length > 0 
                         ? service.associatedItemIds.map(id => getItemName(id)).join(', ') 
-                        : 'None'}
+                        : 'Aucun'}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => handleEditService(service)}><Edit2 className="h-4 w-4" /></Button>
@@ -126,7 +126,7 @@ export default function ServiceManagementTabs() {
                 ))}
               </TableBody>
             </Table>
-             {services.length === 0 && <p className="text-center text-muted-foreground p-4">No services created yet.</p>}
+             {services.length === 0 && <p className="text-center text-muted-foreground p-4">Aucun service créé pour le moment.</p>}
           </CardContent>
         </Card>
       </TabsContent>
@@ -134,17 +134,17 @@ export default function ServiceManagementTabs() {
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between">
              <div>
-              <CardTitle>Manage Items</CardTitle>
-              <CardDescription>Add, edit, or delete items like products or materials.</CardDescription>
+              <CardTitle>Gérer les articles</CardTitle>
+              <CardDescription>Ajouter, modifier ou supprimer des articles ou matériaux.</CardDescription>
             </div>
-            <Button onClick={handleAddItem}><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
+            <Button onClick={handleAddItem}><PlusCircle className="mr-2 h-4 w-4" /> Ajouter un article</Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Price</TableHead>
+                  <TableHead>Nom</TableHead>
+                  <TableHead>Prix</TableHead>
                   <TableHead>Stock</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -165,7 +165,7 @@ export default function ServiceManagementTabs() {
                 ))}
               </TableBody>
             </Table>
-            {items.length === 0 && <p className="text-center text-muted-foreground p-4">No items created yet.</p>}
+            {items.length === 0 && <p className="text-center text-muted-foreground p-4">Aucun article créé pour le moment.</p>}
           </CardContent>
         </Card>
       </TabsContent>
@@ -190,14 +190,14 @@ export default function ServiceManagementTabs() {
       <AlertDialog open={!!itemToDelete || !!serviceToDelete} onOpenChange={() => { setItemToDelete(null); setServiceToDelete(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Êtes-vous sûr&nbsp;?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the {itemToDelete ? 'item' : 'service'}
-              {itemToDelete ? ' and unlink it from any services.' : '.'}
+              Cette action est irréversible. Elle supprimera définitivement {itemToDelete ? 'l\'article' : 'le service'}
+              {itemToDelete ? ' et le retirera des services liés.' : '.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => { setItemToDelete(null); setServiceToDelete(null); }}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => { setItemToDelete(null); setServiceToDelete(null); }}>Annuler</AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
                 if (itemToDelete) handleDeleteItem(itemToDelete);
@@ -205,7 +205,7 @@ export default function ServiceManagementTabs() {
               }}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

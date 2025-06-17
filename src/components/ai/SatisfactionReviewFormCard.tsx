@@ -39,11 +39,11 @@ export default function SatisfactionReviewFormCard() {
     try {
       const response = await generateSatisfactionReviewRequest(data);
       setResult(response);
-      toast({ title: 'Review Request Generated', description: 'Message created successfully.' });
+      toast({ title: 'Demande d\'avis générée', description: 'Message créé avec succès.' });
       reset(data); // Keep current data in form for potential re-send/copy
     } catch (error) {
       console.error('Error generating satisfaction review:', error);
-      toast({ title: 'Error', description: 'Failed to generate review request.', variant: 'destructive' });
+      toast({ title: 'Erreur', description: "Impossible de générer la demande d'avis.", variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -52,37 +52,37 @@ export default function SatisfactionReviewFormCard() {
   return (
     <Card className="shadow-lg w-full" id="satisfaction-review">
       <CardHeader>
-        <CardTitle className="flex items-center text-xl"><MessageSquareHeart className="mr-2 h-6 w-6 text-accent" /> Generate Satisfaction Review Request</CardTitle>
-        <CardDescription>Craft a personalized thank you message and review invitation for your client.</CardDescription>
+        <CardTitle className="flex items-center text-xl"><MessageSquareHeart className="mr-2 h-6 w-6 text-accent" /> Générer une demande d'avis</CardTitle>
+        <CardDescription>Créez un message de remerciement personnalisé et une invitation à laisser un avis.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="clientNameSr">Client Name</Label>
-            <Input id="clientNameSr" {...register('clientName')} placeholder="e.g., John Doe" />
+            <Label htmlFor="clientNameSr">Nom du client</Label>
+            <Input id="clientNameSr" {...register('clientName')} placeholder="ex. Jean Dupont" />
             {errors.clientName && <p className="text-sm text-destructive">{errors.clientName.message}</p>}
           </div>
           <div>
-            <Label htmlFor="serviceNameSr">Service Provided</Label>
-            <Input id="serviceNameSr" {...register('serviceName')} placeholder="e.g., Exterior Cleaning" />
+            <Label htmlFor="serviceNameSr">Service fourni</Label>
+            <Input id="serviceNameSr" {...register('serviceName')} placeholder="ex. Nettoyage extérieur" />
             {errors.serviceName && <p className="text-sm text-destructive">{errors.serviceName.message}</p>}
           </div>
           <div>
-            <Label htmlFor="googleReviewsPageLinkSr">Google Reviews Page Link</Label>
+            <Label htmlFor="googleReviewsPageLinkSr">Lien vers la page Google Reviews</Label>
             <Input id="googleReviewsPageLinkSr" {...register('googleReviewsPageLink')} placeholder="https://g.page/review/..." />
             {errors.googleReviewsPageLink && <p className="text-sm text-destructive">{errors.googleReviewsPageLink.message}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-start space-y-4">
           <Button type="submit" disabled={isLoading} className="w-full sm:w-auto bg-accent hover:bg-accent/90">
-            {isLoading ? 'Generating...' : 'Generate Message'}
+            {isLoading ? 'Génération...' : 'Générer le message'}
           </Button>
           {result && (
             <div className="w-full p-4 border rounded-md bg-muted">
-              <h4 className="font-semibold mb-2">Generated Message:</h4>
+              <h4 className="font-semibold mb-2">Message généré :</h4>
               <Textarea value={result.message} readOnly rows={5} className="bg-background text-sm" />
-              <Button variant="outline" size="sm" className="mt-2" onClick={() => navigator.clipboard.writeText(result.message).then(() => toast({title: 'Copied!', description: 'Message copied to clipboard.'}))}>
-                Copy Message
+              <Button variant="outline" size="sm" className="mt-2" onClick={() => navigator.clipboard.writeText(result.message).then(() => toast({title: 'Copié !', description: 'Message copié dans le presse-papiers.'}))}>
+                Copier le message
               </Button>
             </div>
           )}

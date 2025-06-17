@@ -53,7 +53,7 @@ export default function AppointmentCalendarView({
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg">
-            Appointments for {selectedDate ? format(selectedDate, 'MMMM d, yyyy') : 'selected date'}
+            Rendez-vous du {selectedDate ? format(selectedDate, 'd MMMM yyyy') : 'jour sélectionné'}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -74,13 +74,13 @@ export default function AppointmentCalendarView({
                   <p className="text-sm text-muted-foreground">
                     {format(parseISO(apt.start.toString()), 'p')} - {format(parseISO(apt.end.toString()), 'p')}
                   </p>
-                  {apt.clientName && <p className="text-sm text-muted-foreground">Client: {apt.clientName}</p>}
-                  {apt.location && <p className="text-sm text-muted-foreground">Location: {apt.location}</p>}
+                  {apt.clientName && <p className="text-sm text-muted-foreground">Client : {apt.clientName}</p>}
+                  {apt.location && <p className="text-sm text-muted-foreground">Lieu : {apt.location}</p>}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-muted-foreground">No appointments for this date.</p>
+            <p className="text-sm text-muted-foreground">Aucun rendez-vous pour cette date.</p>
           )}
         </CardContent>
       </Card>

@@ -25,7 +25,7 @@ export default function ChatbotWidget() {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-       setMessages([{ id: 'welcome', role: 'system_message', content: 'Welcome to PoliMinder Support! How can I help you today?', timestamp: new Date() }]);
+       setMessages([{ id: 'welcome', role: 'system_message', content: 'Bienvenue sur le support PoliMinder ! Comment puis-je vous aider aujourd\'hui ?', timestamp: new Date() }]);
     }
   }, [isOpen]);
 
@@ -61,11 +61,11 @@ export default function ChatbotWidget() {
       const errorMessage: ChatMessage = {
         id: String(Date.now() + 1),
         role: 'system_message',
-        content: 'Sorry, I encountered an error. Please try again later.',
+        content: "Désolé, une erreur est survenue. Veuillez réessayer plus tard.",
         timestamp: new Date(),
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
-      toast({ title: "Chatbot Error", description: "Could not get a response from the chatbot.", variant: "destructive"});
+      toast({ title: "Erreur du chatbot", description: "Impossible d'obtenir une réponse du chatbot.", variant: "destructive"});
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +78,7 @@ export default function ChatbotWidget() {
         size="lg"
         className="fixed bottom-6 right-6 rounded-full shadow-xl w-16 h-16 p-0 z-50 bg-primary hover:bg-primary/90"
         onClick={() => setIsOpen(true)}
-        aria-label="Open chat"
+        aria-label="Ouvrir le chat"
       >
         <MessageCircle className="h-8 w-8 text-primary-foreground" />
       </Button>
@@ -88,14 +88,14 @@ export default function ChatbotWidget() {
           <DialogHeader className="p-4 border-b flex-row items-center justify-between">
             <div className="flex items-center gap-2">
               <Bot className="h-6 w-6 text-primary" />
-              <DialogTitle className="font-headline">PoliMinder Assistant</DialogTitle>
+              <DialogTitle className="font-headline">Assistant PoliMinder</DialogTitle>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8">
               <X className="h-5 w-5" />
-              <span className="sr-only">Close chat</span>
+              <span className="sr-only">Fermer le chat</span>
             </Button>
           </DialogHeader>
-          <DialogDescription className="hidden">Chat with PoliMinder support.</DialogDescription>
+          <DialogDescription className="hidden">Discutez avec le support PoliMinder.</DialogDescription>
           
           <div className="flex-1 overflow-hidden">
             <ChatMessages messages={messages} />

@@ -25,14 +25,14 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
     <form onSubmit={handleSubmit} className="flex items-center space-x-2 p-4 border-t">
       <Input
         type="text"
-        placeholder="Type your message..."
+        placeholder="Tapez votre message..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         disabled={isLoading}
         className="flex-1"
-        aria-label="Chat message input"
+        aria-label="Saisie du message"
       />
-      <Button type="submit" size="icon" disabled={isLoading || !inputValue.trim()} aria-label="Send message">
+      <Button type="submit" size="icon" disabled={isLoading || !inputValue.trim()} aria-label="Envoyer le message">
         <Send className="h-5 w-5" />
       </Button>
     </form>

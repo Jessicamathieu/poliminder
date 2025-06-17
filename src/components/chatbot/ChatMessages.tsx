@@ -58,7 +58,7 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
          {messages.length === 0 && (
           <div className="text-center text-muted-foreground py-10">
             <Bot size={48} className="mx-auto mb-2 opacity-50" />
-            <p>Ask me anything about PoliMinder services!</p>
+            <p>Posez-moi toutes vos questions sur les services PoliMinder&nbsp;!</p>
           </div>
         )}
       </div>
