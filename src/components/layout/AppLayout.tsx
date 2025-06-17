@@ -3,18 +3,20 @@ import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter,
 import Link from 'next/link';
 import { Home, Calendar, ListChecks, Wrench, Settings, Bot, Zap, FileText, Users } from 'lucide-react';
 import ChatbotWidget from '@/components/chatbot/ChatbotWidget';
+import { useTranslation } from '@/i18n/I18nProvider';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/appointments', label: 'Appointments', icon: Calendar },
-  { href: '/tasks', label: 'Tasks', icon: ListChecks },
-  { href: '/services', label: 'Services & Items', icon: Wrench },
-  { href: '/ai-tools', label: 'AI Tools', icon: Zap },
-  { href: '/integrations', label: 'Integrations', icon: FileText },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard', labelKey: 'dashboard', icon: Home },
+  { href: '/appointments', labelKey: 'appointments', icon: Calendar },
+  { href: '/tasks', labelKey: 'tasks', icon: ListChecks },
+  { href: '/services', labelKey: 'services', icon: Wrench },
+  { href: '/ai-tools', labelKey: 'ai_tools', icon: Zap },
+  { href: '/integrations', labelKey: 'integrations', icon: FileText },
+  { href: '/settings', labelKey: 'settings', icon: Settings },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   return (
     <SidebarProvider defaultOpen>
       <Sidebar>
@@ -35,10 +37,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     variant="default"
                     size="default"
                     className="w-full justify-start"
-                    tooltip={item.label}
+                    tooltip={t(item.labelKey)}
                   >
                     <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -52,7 +54,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <SidebarInset>
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 bg-background/80 backdrop-blur-sm border-b">
           <SidebarTrigger className="md:hidden" />
-          <h2 className="text-lg font-semibold text-foreground">Welcome</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t('welcome')}</h2>
           {/* User profile / actions can go here */}
            <Users className="h-6 w-6 text-primary" />
         </header>
