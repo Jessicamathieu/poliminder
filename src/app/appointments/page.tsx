@@ -50,6 +50,49 @@ const getInitialAppointments = (): Appointment[] => {
       location: '456 Oak Ave, Anytown, USA',
       status: 'confirmed',
     },
+    {
+      id: '3',
+      title: 'Window Washing - John Doe',
+      start: createDate(baseToday, 0, 9), // Today 9:00 AM
+      end: createDate(baseToday, 0, 11),  // Today 11:00 AM
+      clientId: 'c1',
+      clientName: 'John Doe',
+      employeeId: 'e2',
+      employeeName: 'Bob Johnson',
+      serviceId: 's2',
+      serviceName: 'Window Washing',
+      location: '123 Main St, Anytown, USA',
+      notes: 'Check front windows first.',
+      status: 'scheduled',
+    },
+    {
+      id: '4',
+      title: 'Exterior Cleaning - Jane Roe',
+      start: createDate(baseToday, 3, 11), // In 3 days 11:00 AM
+      end: createDate(baseToday, 3, 13),   // In 3 days 1:00 PM
+      clientId: 'c2',
+      clientName: 'Jane Roe',
+      employeeId: 'e1',
+      employeeName: 'Alice Smith',
+      serviceId: 's1',
+      serviceName: 'Exterior Cleaning',
+      location: '456 Oak Ave, Anytown, USA',
+      status: 'scheduled',
+    },
+    {
+      id: '5',
+      title: 'Window Washing - John Doe',
+      start: createDate(baseToday, 4, 15),    // In 4 days 3:00 PM
+      end: createDate(baseToday, 4, 16, 30), // In 4 days 4:30 PM
+      clientId: 'c1',
+      clientName: 'John Doe',
+      employeeId: 'e1',
+      employeeName: 'Alice Smith',
+      serviceId: 's2',
+      serviceName: 'Window Washing',
+      location: '123 Main St, Anytown, USA',
+      status: 'confirmed',
+    },
   ];
 };
 
