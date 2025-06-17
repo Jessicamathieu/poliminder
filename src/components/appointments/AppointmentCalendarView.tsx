@@ -1,10 +1,11 @@
+
 'use client';
 
 import type { Appointment } from '@/lib/types';
 import { Calendar } from '@/components/common/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/card';
 import { Badge } from '@/components/common/badge';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { format, isSameDay, parseISO } from 'date-fns';
 
 interface AppointmentCalendarViewProps {
@@ -18,7 +19,12 @@ export default function AppointmentCalendarView({
   onDateSelect,
   onAppointmentSelect,
 }: AppointmentCalendarViewProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    // Set initial date only on the client side after hydration
+    setSelectedDate(new Date());
+  }, []);
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -47,17 +53,18 @@ export default function AppointmentCalendarView({
             className="p-4 w-full"
             modifiers={{ event: eventDays }}
             modifiersClassNames={{ event: 'bg-accent/30 rounded-full' }}
+            initialFocus
           />
         </CardContent>
       </Card>
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg">
-            Rendez-vous du {selectedDate ? format(selectedDate, 'd MMMM yyyy') : 'jour sélectionné'}
+            Rendez-vous du {selectedDate ? format(selectedDate, 'd MMMM yyyy') : 'chargement...'}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {appointmentsOnSelectedDate.length > 0 ? (
+          {selectedDate && appointmentsOnSelectedDate.length > 0 ? (
             <ul className="space-y-3">
               {appointmentsOnSelectedDate.map((apt) => (
                 <li
@@ -80,7 +87,9 @@ export default function AppointmentCalendarView({
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-muted-foreground">Aucun rendez-vous pour cette date.</p>
+            <p className="text-sm text-muted-foreground">
+              {selectedDate ? 'Aucun rendez-vous pour cette date.' : 'Sélectionnez une date pour voir les rendez-vous.'}
+            </p>
           )}
         </CardContent>
       </Card>
