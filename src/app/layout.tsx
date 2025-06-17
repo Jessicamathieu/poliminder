@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import AppLayout from '@/components/layout/AppLayout';
 import { Inter } from 'next/font/google';
+import { I18nProvider } from '@/i18n/I18nProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,7 +27,9 @@ export default function RootLayout({
         {/* Les balises link pour Google Fonts ont été supprimées et remplacées par next/font */}
       </head>
       <body className="font-body antialiased">
-        <AppLayout>{children}</AppLayout>
+        <I18nProvider locale="en">
+          <AppLayout>{children}</AppLayout>
+        </I18nProvider>
         <Toaster />
       </body>
     </html>
