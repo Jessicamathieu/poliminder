@@ -1,7 +1,7 @@
 'use client';
 
 import type { Service, Item } from '@/lib/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import {
   Dialog,
   DialogContent,
@@ -9,12 +9,12 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@/components/common/dialog';
+import { Input } from '@/components/common/input';
+import { Label } from '@/components/common/label';
+import { Textarea } from '@/components/common/textarea';
+import { Checkbox } from '@/components/common/checkbox';
+import { ScrollArea } from '@/components/common/scroll-area';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';

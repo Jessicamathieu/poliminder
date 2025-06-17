@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { ChatMessage } from '@/lib/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
+} from '@/components/common/dialog';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 import { Bot, MessageCircle, X } from 'lucide-react';

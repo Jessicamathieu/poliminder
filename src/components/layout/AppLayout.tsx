@@ -1,6 +1,6 @@
 'use client';
 import type { ReactNode } from 'react';
-import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarTrigger, SidebarInset, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarTrigger, SidebarInset, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/common/sidebar';
 import Link from 'next/link';
 import { Home, Calendar, ListChecks, Wrench, Settings, Bot, Zap, FileText, Users } from 'lucide-react';
 import ChatbotWidget from '@/components/chatbot/ChatbotWidget';

@@ -1,9 +1,9 @@
 'use client';
 
 import type { Appointment } from '@/lib/types';
-import { Calendar } from '@/components/ui/calendar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Calendar } from '@/components/common/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/card';
+import { Badge } from '@/components/common/badge';
 import { useState, useMemo } from 'react';
 import { format, isSameDay, parseISO } from 'date-fns';
 

@@ -5,7 +5,7 @@ import type { Appointment, Client, Employee, Service } from '@/lib/types';
 import AppointmentCalendarView from '@/components/appointments/AppointmentCalendarView';
 import AppointmentFormDialog from '@/components/appointments/AppointmentFormDialog';
 import type { AppointmentFormData } from '@/components/appointments/AppointmentFormDialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import { PlusCircle } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';

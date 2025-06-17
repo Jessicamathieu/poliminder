@@ -1,7 +1,7 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/common/card";
+import { Button } from "@/components/common/button";
+import { Switch } from "@/components/common/switch";
+import { Label } from "@/components/common/label";
 import { BellDot, UserCheck } from "lucide-react";
 import Image from "next/image";
 
