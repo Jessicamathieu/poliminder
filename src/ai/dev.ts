@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/process-ai-commands.ts';
+import '@/ai/flows/add-expense-via-ai.ts';

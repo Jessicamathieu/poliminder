@@ -1,0 +1,68 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
+import AppLayout from "@/components/layout/app-layout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export default function AdminPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.push("/login");
+      } else if (user.role !== 'admin') {
+        router.push("/");
+      }
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user || user.role !== 'admin') {
+     return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <p>Loading or redirecting...</p>
+      </div>
+    );
+  }
+
+  return (
+    <AppLayout>
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight font-headline">
+            Page d'Administration
+          </h1>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline">Paramètres de l'Application</CardTitle>
+            <CardDescription>
+              Gérez ici les paramètres globaux, les utilisateurs et les intégrations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="p-6 border rounded-lg">
+                <h3 className="font-semibold text-lg mb-2 font-headline">Gestion des Utilisateurs</h3>
+                <p className="text-muted-foreground mb-4">Ajoutez, modifiez ou supprimez des utilisateurs.</p>
+                <Button>Gérer les Utilisateurs</Button>
+            </div>
+             <div className="p-6 border rounded-lg">
+                <h3 className="font-semibold text-lg mb-2 font-headline">Intégration QuickBooks</h3>
+                <p className="text-muted-foreground mb-4">Connectez-vous à votre compte QuickBooks Canada.</p>
+                <Button variant="secondary">Connecter QuickBooks</Button>
+            </div>
+             <div className="p-6 border rounded-lg">
+                <h3 className="font-semibold text-lg mb-2 font-headline">Rapports Avancés</h3>
+                <p className="text-muted-foreground mb-4">Générez des rapports financiers et opérationnels détaillés.</p>
+                <Button>Voir les Rapports</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </AppLayout>
+  );
+}
