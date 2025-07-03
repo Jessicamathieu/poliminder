@@ -52,14 +52,23 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight font-headline">
-            {user.role === 'admin' ? "Tableau de Bord de Jessica" : "Tableau de Bord de Mikael"}
-          </h1>
+      <>
+        <div 
+          className="absolute inset-x-0 top-0 z-0 h-64 w-full"
+          style={{
+              background: 'hsl(var(--primary) / 0.05)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0% 100%)'
+          }}
+        />
+        <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
+          <div className="flex items-center justify-between space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight font-headline">
+              {user.role === 'admin' ? "Tableau de Bord de Jessica" : "Tableau de Bord de Mikael"}
+            </h1>
+          </div>
+          {user.role === "admin" ? <AdminDashboard /> : <FieldDashboard />}
         </div>
-        {user.role === "admin" ? <AdminDashboard /> : <FieldDashboard />}
-      </div>
+      </>
     </AppLayout>
   );
 }

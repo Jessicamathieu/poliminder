@@ -69,7 +69,7 @@ export default function ClientsPage() {
 
   return (
     <AppLayout>
-      <main className="relative flex-1 overflow-y-auto">
+      <>
         <div 
             className="absolute inset-x-0 top-0 z-0 h-64 w-full"
             style={{
@@ -108,7 +108,7 @@ export default function ClientsPage() {
 
           </div>
         </div>
-      </main>
+      </>
     </AppLayout>
   );
 }

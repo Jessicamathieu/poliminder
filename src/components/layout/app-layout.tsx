@@ -10,7 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="flex flex-col flex-1">
         <Header />
-        <main className="flex-1 bg-background">{children}</main>
+        <main className="flex-1 bg-background relative overflow-y-auto">{children}</main>
       </div>
     </SidebarProvider>
   );

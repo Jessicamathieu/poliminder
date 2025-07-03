@@ -25,50 +25,59 @@ export default function ExpensesPage() {
 
   return (
     <AppLayout>
-      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight font-headline">Dépenses</h1>
+      <>
+        <div 
+          className="absolute inset-x-0 top-0 z-0 h-64 w-full"
+          style={{
+              background: 'hsl(var(--primary) / 0.05)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0% 100%)'
+          }}
+        />
+        <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold tracking-tight font-headline">Dépenses</h1>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+              <Card>
+                  <CardHeader>
+                      <CardTitle className="font-headline">Ajouter une dépense avec l'IA</CardTitle>
+                      <CardDescription>Décrivez votre dépense en langage naturel. Par exemple : "Ajoute une dépense essence 80$ chez Shell".</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <ExpenseFormAI />
+                  </CardContent>
+              </Card>
+              <Card>
+              <CardHeader>
+                  <CardTitle className="font-headline">Dépenses Récentes</CardTitle>
+                  <CardDescription>Voici la liste de vos dernières dépenses enregistrées.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <Table>
+                  <TableHeader>
+                      <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Catégorie</TableHead>
+                      <TableHead>Vendeur</TableHead>
+                      <TableHead className="text-right">Montant</TableHead>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                      {expenses.map((expense) => (
+                      <TableRow key={expense.id}>
+                          <TableCell>{expense.date}</TableCell>
+                          <TableCell>{expense.category}</TableCell>
+                          <TableCell className="font-medium">{expense.vendor}</TableCell>
+                          <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
+                      </TableRow>
+                      ))}
+                  </TableBody>
+                  </Table>
+              </CardContent>
+              </Card>
+          </div>
         </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline">Ajouter une dépense avec l'IA</CardTitle>
-                    <CardDescription>Décrivez votre dépense en langage naturel. Par exemple : "Ajoute une dépense essence 80$ chez Shell".</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ExpenseFormAI />
-                </CardContent>
-            </Card>
-            <Card>
-            <CardHeader>
-                <CardTitle className="font-headline">Dépenses Récentes</CardTitle>
-                 <CardDescription>Voici la liste de vos dernières dépenses enregistrées.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Catégorie</TableHead>
-                    <TableHead>Vendeur</TableHead>
-                    <TableHead className="text-right">Montant</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {expenses.map((expense) => (
-                    <TableRow key={expense.id}>
-                        <TableCell>{expense.date}</TableCell>
-                        <TableCell>{expense.category}</TableCell>
-                        <TableCell className="font-medium">{expense.vendor}</TableCell>
-                        <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
-            </CardContent>
-            </Card>
-        </div>
-      </div>
+      </>
     </AppLayout>
   );
 }
