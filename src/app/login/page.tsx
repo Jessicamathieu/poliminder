@@ -27,9 +27,27 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gradient-to-br from-background to-secondary">
-       <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-5"></div>
-      <Card className="w-full max-w-md z-10 shadow-2xl animate-fade-in-up">
+    <main className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-background overflow-hidden">
+      <div 
+        className="absolute -top-1/4 -right-1/4 h-[150%] w-3/4"
+        style={{
+            background: 'linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7))',
+            transform: 'rotate(15deg)',
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)',
+            zIndex: 0
+        }}
+      />
+      <div 
+        className="absolute -top-1/4 -right-1/3 h-[150%] w-3/4"
+        style={{
+            backgroundColor: 'hsl(var(--foreground) / 0.9)',
+            transform: 'rotate(25deg)',
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)',
+            zIndex: 0
+        }}
+      />
+       
+      <Card className="w-full max-w-md z-10 shadow-2xl animate-fade-in-up bg-card/80 backdrop-blur-sm border-0">
         <CardHeader className="text-center">
           <h1 className="text-4xl font-bold font-headline text-primary">PoliMindeR</h1>
           <CardDescription className="pt-2">Votre assistant d'entreprise intelligent</CardDescription>
@@ -56,10 +74,6 @@ export default function LoginPage() {
         </CardContent>
       </Card>
       <style jsx>{`
-        .bg-grid-pattern {
-            background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
-            background-size: 2rem 2rem;
-        }
         @keyframes fade-in-up {
             from {
                 opacity: 0;

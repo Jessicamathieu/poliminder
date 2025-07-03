@@ -70,7 +70,13 @@ export default function ClientsPage() {
   return (
     <AppLayout>
       <main className="relative flex-1 overflow-y-auto">
-        <div className="absolute inset-x-0 top-0 z-0 h-64 w-full bg-grid-pattern"></div>
+        <div 
+            className="absolute inset-x-0 top-0 z-0 h-64 w-full"
+            style={{
+                background: 'hsl(var(--primary) / 0.05)',
+                clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0% 100%)'
+            }}
+        />
         <div className="relative z-10 p-4 md:p-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
             
@@ -103,15 +109,6 @@ export default function ClientsPage() {
           </div>
         </div>
       </main>
-      <style jsx>{`
-        .bg-grid-pattern {
-            background-image:
-                linear-gradient(to right, hsl(var(--primary) / 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px);
-            background-size: 3rem 3rem;
-            mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
-        }
-      `}</style>
     </AppLayout>
   );
 }
