@@ -6,10 +6,9 @@ import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { appointments } from "@/lib/data";
-import { PlusCircle, FileUp } from "lucide-react";
+import { PlusCircle, FileUp, Calendar, User } from "lucide-react";
 
 export default function AppointmentsPage() {
   const { user, loading } = useAuth();
@@ -40,72 +39,57 @@ export default function AppointmentsPage() {
 
   return (
     <AppLayout>
-      <>
+       <div className="relative h-full">
         <div
-          className="absolute inset-x-0 top-0 z-0 h-96"
+          className="absolute inset-x-0 top-0 z-0 h-full"
           style={{
-              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
-              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
+            background: 'linear-gradient(180deg, hsl(var(--primary)/.15) 0%, hsl(var(--background)) 50%)'
           }}
         />
-        <div
-            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
-            style={{
-                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
-                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
-            }}
-        />
-        <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">Rendez-vous</h1>
+        <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h1 className="text-3xl font-bold tracking-tight font-headline">
+              Gestion des Rendez-vous
+            </h1>
             <div className="flex items-center space-x-2">
-              <Button>
+              <Button className="shadow-lg hover:shadow-primary/40">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Nouveau Rendez-vous
               </Button>
               {user.role === 'admin' && (
-                <Button variant="outline">
+                <Button variant="outline" className="shadow-lg">
                   <FileUp className="mr-2 h-4 w-4" />
-                  Facturer les rendez-vous terminés
+                  Facturer les rendez-vous
                 </Button>
               )}
             </div>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Liste des Rendez-vous</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Assigné à</TableHead>
-                    <TableHead>Statut</TableHead>
-                    {user.role === 'admin' && <TableHead className="text-right">Montant</TableHead>}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {appointments.map((appointment) => (
-                    <TableRow key={appointment.id}>
-                      <TableCell className="font-medium">{appointment.client}</TableCell>
-                      <TableCell>{appointment.service}</TableCell>
-                      <TableCell>{appointment.date}</TableCell>
-                      <TableCell>{appointment.assignedTo}</TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusVariant(appointment.status) as any}>{appointment.status}</Badge>
-                      </TableCell>
-                      {user.role === 'admin' && <TableCell className="text-right">${appointment.amount.toFixed(2)}</TableCell>}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {appointments.map((appointment) => (
+              <Card key={appointment.id} className="border-2 border-primary/20 rounded-2xl shadow-md hover:shadow-xl hover:border-primary/50 transition-all duration-300 ease-in-out">
+                <CardHeader>
+                  <CardTitle className="font-headline text-lg text-primary">{appointment.service}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <User className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{appointment.client}</span>
+                  </div>
+                   <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <span>{appointment.date}</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-2">
+                     <Badge variant={getStatusVariant(appointment.status) as any}>{appointment.status}</Badge>
+                     {user.role === 'admin' && <span className="font-bold text-lg">${appointment.amount.toFixed(2)}</span>}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-      </>
+      </div>
     </AppLayout>
   );
 }
