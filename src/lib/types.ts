@@ -18,6 +18,7 @@ export interface Service {
   name: string;
   description: string;
   price: number;
+  createdAt?: any;
 }
 
 export interface Appointment {
@@ -39,7 +40,7 @@ export interface Project {
 }
 
 export interface Expense {
-  id: string;
+  id:string;
   date: string;
   category: string;
   vendor: string;
