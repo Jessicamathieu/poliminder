@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Par défaut, refuser toutes les lectures et écritures.
+    // C'est la configuration la plus sécurisée pour commencer.
+    // Vous devrez ajouter des règles spécifiques pour autoriser l'accès
+    // à vos collections de données.
+    //
+    // Exemple pour autoriser uniquement les utilisateurs authentifiés à lire/écrire
+    // leurs propres données dans une collection 'users':
+    //
+    // match /users/{userId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == userId;
+    // }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
