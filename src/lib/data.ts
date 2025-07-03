@@ -1,10 +1,10 @@
 import { Client, Service, Appointment, Project, Expense, ChartData } from "./types";
 
 export const clients: Client[] = [
-  { id: "1", name: "Innovate Inc.", email: "contact@innovate.com", phone: "555-0101", activeProjects: 2 },
-  { id: "2", name: "Solutions Co.", email: "hello@solutions.co", phone: "555-0102", activeProjects: 1 },
-  { id: "3", name: "Apex Enterprises", email: "support@apex.com", phone: "555-0103", activeProjects: 3 },
-  { id: "4", name: "Quantum Group", email: "info@quantum.com", phone: "555-0104", activeProjects: 0 },
+  { id: "1", name: "Innovate Inc.", email: "contact@innovate.com", phone: "555-0101", address: "123 Rue de l'Innovation, Montréal", activeProjects: 2 },
+  { id: "2", name: "Solutions Co.", email: "hello@solutions.co", phone: "555-0102", address: "456 Avenue des Affaires, Laval", activeProjects: 1 },
+  { id: "3", name: "Apex Enterprises", email: "support@apex.com", phone: "555-0103", address: "789 Boulevard du Succès, Québec", activeProjects: 3 },
+  { id: "4", name: "Quantum Group", email: "info@quantum.com", phone: "555-0104", address: "101 Place du Futur, Longueuil", activeProjects: 0 },
 ];
 
 export const services: Service[] = [

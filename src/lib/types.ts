@@ -8,7 +8,9 @@ export interface Client {
   name: string;
   email: string;
   phone: string;
+  address: string;
   activeProjects: number;
+  createdAt?: any;
 }
 
 export interface Service {
