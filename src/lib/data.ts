@@ -34,7 +34,7 @@ export const expenses: Expense[] = [
   { id: "3", date: "2024-07-18", category: "Logiciels", vendor: "Adobe Creative Cloud", amount: 59.99 },
 ];
 
-export const chartData: ChartData[] = [
+export const generateChartData = (): ChartData[] => [
   { name: "Jan", total: Math.floor(Math.random() * 5000) + 1000 },
   { name: "Fév", total: Math.floor(Math.random() * 5000) + 1000 },
   { name: "Mar", total: Math.floor(Math.random() * 5000) + 1000 },
