@@ -1,93 +1,129 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { appointments } from "@/lib/data";
-import { PlusCircle, FileUp, Calendar, User } from "lucide-react";
+import { collection, onSnapshot, query, where, Timestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { Appointment } from "@/lib/types";
+import { ChevronLeft, ChevronRight, PlusCircle, Camera } from "lucide-react";
+import { add, format, startOfWeek, sub } from "date-fns";
+import { fr } from "date-fns/locale";
+
+import AppointmentWeekView from "@/components/appointments/appointment-week-view";
+import AddAppointmentDialog from "@/components/appointments/add-appointment-dialog";
+import ExtractFromPhotoDialog from "@/components/ai/extract-from-photo-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AppointmentsPage() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [view, setView] = useState<"day" | "week" | "month">("week");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, authLoading, router]);
 
-  if (loading || !user) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  useEffect(() => {
+    if (!user) return;
+
+    setIsLoading(true);
+    const appointmentsCol = collection(db, 'appointments');
+    
+    // Pour l'instant, on récupère tous les rendez-vous. 
+    // On pourrait filtrer par date pour optimiser.
+    const q = query(appointmentsCol);
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const appointmentsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          start: (data.start as Timestamp).toDate(),
+          end: (data.end as Timestamp).toDate(),
+        } as Appointment;
+      });
+      setAppointments(appointmentsData);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  if (authLoading || !user) {
+    return (
+      <AppLayout>
+        <div className="flex h-full items-center justify-center">
+            <p>Loading...</p>
+        </div>
+      </AppLayout>
+    );
   }
 
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case "Terminé":
-        return "default";
-      case "À venir":
-        return "secondary";
-      case "Annulé":
-        return "destructive";
-      default:
-        return "outline";
-    }
+  const handleDateChange = (amount: number, unit: "days" | "weeks" | "months") => {
+    setCurrentDate(add(currentDate, { [unit]: amount }));
+  };
+  
+  const handlePrevious = () => {
+    if (view === 'week') setCurrentDate(sub(currentDate, { weeks: 1 }));
+    // Ajouter logique pour jour et mois
+  };
+  
+  const handleNext = () => {
+     if (view === 'week') setCurrentDate(add(currentDate, { weeks: 1 }));
+    // Ajouter logique pour jour et mois
+  };
+  
+  const handleToday = () => {
+    setCurrentDate(new Date());
   };
 
+  const formattedDate = () => {
+    if (view === 'week') {
+      const start = startOfWeek(currentDate, { locale: fr });
+      const end = add(start, { days: 6 });
+      return `${format(start, 'd MMMM', { locale: fr })} - ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+    }
+    return format(currentDate, "MMMM yyyy", { locale: fr });
+  };
+  
   return (
     <AppLayout>
-       <div className="relative h-full">
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-full"
-          style={{
-            background: 'linear-gradient(180deg, hsl(var(--primary)/.15) 0%, hsl(var(--background)) 50%)'
-          }}
-        />
-        <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">
-              Gestion des Rendez-vous
-            </h1>
-            <div className="flex items-center space-x-2">
-              <Button className="shadow-lg hover:shadow-primary/40">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Nouveau Rendez-vous
-              </Button>
-              {user.role === 'admin' && (
-                <Button variant="outline" className="shadow-lg">
-                  <FileUp className="mr-2 h-4 w-4" />
-                  Facturer les rendez-vous
-                </Button>
-              )}
+      <div className="flex h-full flex-col">
+        <header className="flex flex-none items-center justify-between border-b border-border p-4">
+          <div className="flex items-center gap-2">
+            <Button onClick={handleToday} variant="outline">Aujourd'hui</Button>
+            <Button variant="ghost" size="icon" onClick={handlePrevious}><ChevronLeft/></Button>
+            <Button variant="ghost" size="icon" onClick={handleNext}><ChevronRight /></Button>
+            <h2 className="ml-4 text-lg font-semibold text-foreground">{formattedDate()}</h2>
+          </div>
+          <div className="flex items-center gap-4">
+             <div className="hidden rounded-md bg-muted p-0.5 sm:flex">
+              <Button onClick={() => setView('day')} variant={view === 'day' ? 'outline' : 'ghost'} size="sm" disabled>Jour</Button>
+              <Button onClick={() => setView('week')} variant={view === 'week' ? 'outline' : 'ghost'} size="sm">Semaine</Button>
+              <Button onClick={() => setView('month')} variant={view === 'month' ? 'outline' : 'ghost'} size="sm" disabled>Mois</Button>
             </div>
+            <ExtractFromPhotoDialog />
+            <AddAppointmentDialog />
           </div>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {appointments.map((appointment) => (
-              <Card key={appointment.id} className="border-2 border-primary/20 rounded-2xl shadow-md hover:shadow-xl hover:border-primary/50 transition-all duration-300 ease-in-out">
-                <CardHeader>
-                  <CardTitle className="font-headline text-lg text-primary">{appointment.service}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="h-4 w-4" />
-                    <span className="font-medium text-foreground">{appointment.client}</span>
-                  </div>
-                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{appointment.date}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-2">
-                     <Badge variant={getStatusVariant(appointment.status) as any}>{appointment.status}</Badge>
-                     {user.role === 'admin' && <span className="font-bold text-lg">${appointment.amount.toFixed(2)}</span>}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        </header>
+
+        <div className="flex-1 overflow-auto">
+          {isLoading ? (
+            <div className="p-8">
+              <Skeleton className="h-[600px] w-full" />
+            </div>
+          ) : (
+            <AppointmentWeekView currentDate={currentDate} appointments={appointments} />
+          )}
         </div>
       </div>
     </AppLayout>

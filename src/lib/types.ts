@@ -23,12 +23,23 @@ export interface Service {
 
 export interface Appointment {
   id: string;
-  client: string;
-  service: string;
-  date: string;
+  client: string; // Gardé pour la compatibilité avec la vue projet
+  service: string; // Gardé pour la compatibilité avec la vue projet
+  start: Date;
+  end: Date;
   assignedTo: "Jessica" | "Mikael";
   status: "À venir" | "Terminé" | "Annulé";
   amount: number;
+
+  // Champs pour le nouvel agenda
+  clientId?: string;
+  clientName?: string;
+  clientPhone?: string;
+  clientAddress?: string;
+  serviceIds?: string[];
+  serviceNames?: string[];
+  isCompleted?: boolean;
+  notes?: string;
 }
 
 export interface Project {
