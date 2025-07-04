@@ -1,10 +1,10 @@
 // HSL values for use in CSS
 const COLORS = {
-  dashboard: '262 83% 58%',     // Purple
-  clients: '221 83% 53%',       // Blue
-  services: '142 76% 36%',      // Green
-  appointments: '35 92% 51%',   // Orange
-  projects: '173 90% 36%',      // Teal
+  dashboard: '231 79% 52%',     // Blue: #2743e3
+  clients: '60 100% 50%',       // Yellow: #ffff00
+  services: '123 76% 42%',      // Green: #0ccc34
+  appointments: '29 97% 57%',   // Orange: #fb9026
+  projects: '300 100% 50%',     // Pink: #ff00ff
   expenses: '0 72% 51%',        // Red
   admin: '240 5% 65%',          // Gray
 };
