@@ -15,7 +15,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, LogOut, Sparkles } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import CommandPalette from "@/components/ai/command-palette";
-import AddClientDialog from "../clients/add-client-dialog";
 import ExtractFromPhotoDialog from "../ai/extract-from-photo-dialog";
 
 export default function Header() {

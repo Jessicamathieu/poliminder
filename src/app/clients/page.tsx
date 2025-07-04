@@ -7,9 +7,10 @@ import AppLayout from "@/components/layout/app-layout";
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { Client } from "@/lib/types";
-import AddClientForm from "@/components/clients/add-client-form";
+import AddClientDialog from "@/components/clients/add-client-dialog";
 import ClientCard from "@/components/clients/client-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Users } from "lucide-react";
 
 export default function ClientsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -30,7 +31,6 @@ export default function ClientsPage() {
       setClients(clientsData);
     } catch (error) {
         console.error("Failed to fetch clients:", error);
-        // Optionnel : afficher un toast d'erreur
     } finally {
         setIsLoading(false);
     }
@@ -53,7 +53,6 @@ export default function ClientsPage() {
       activeProjects: 0,
       createdAt: serverTimestamp(),
     });
-    // Rafraîchit la liste optimiste ou complète
     fetchClients();
   };
   
@@ -84,36 +83,31 @@ export default function ClientsPage() {
                 clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
             }}
         />
-        <div className="relative z-10 p-4 md:p-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
-            
-            <aside className="lg:col-span-1">
-              <div className="sticky top-8">
-                <AddClientForm onClientAdded={handleAddClient} />
-              </div>
-            </aside>
+        <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center">
+                    <Users className="mr-4 h-8 w-8 text-primary" />
+                    Vos Clients
+                </h1>
+                <AddClientDialog onClientAdded={handleAddClient} />
+            </div>
 
-            <section className="lg:col-span-3">
-              <h1 className="mb-6 text-3xl font-bold tracking-tight font-headline">Vos Clients</h1>
-              {isLoading ? (
-                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                  {[...Array(3)].map((_, i) => <ClientCardSkeleton key={i} />)}
-                </div>
-              ) : clients.length > 0 ? (
-                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                  {clients.map((client) => (
-                    <ClientCard key={client.id} client={client} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm">
-                  <h3 className="text-xl font-semibold font-headline">Aucun client pour le moment</h3>
-                  <p className="mt-2 text-muted-foreground">Utilisez le formulaire pour ajouter votre premier client !</p>
-                </div>
-              )}
-            </section>
-
-          </div>
+            {isLoading ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {[...Array(4)].map((_, i) => <ClientCardSkeleton key={i} />)}
+            </div>
+            ) : clients.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {clients.map((client) => (
+                <ClientCard key={client.id} client={client} />
+                ))}
+            </div>
+            ) : (
+            <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
+                <h3 className="text-xl font-semibold font-headline text-primary">Aucun client pour le moment</h3>
+                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" pour commencer !</p>
+            </div>
+            )}
         </div>
       </>
     </AppLayout>
@@ -121,7 +115,7 @@ export default function ClientsPage() {
 }
 
 const ClientCardSkeleton = () => (
-  <div className="flex flex-col p-6 space-y-4 border rounded-xl shadow-sm bg-card">
+  <div className="flex flex-col p-6 space-y-4 border rounded-xl shadow-sm bg-card transition-all duration-300">
     <div className="flex items-center gap-4">
       <Skeleton className="w-12 h-12 rounded-full" />
       <div className="w-full space-y-2">
@@ -137,17 +131,13 @@ const ClientCardSkeleton = () => (
 );
 
 const ClientPageSkeleton = () => (
-    <div className="w-full">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
-            <div className="lg:col-span-1">
-                 <Skeleton className="h-[580px] w-full rounded-xl" />
-            </div>
-            <div className="lg:col-span-3">
-                <Skeleton className="h-10 w-64 mb-6" />
-                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    {[...Array(3)].map((_, i) => <ClientCardSkeleton key={i} />)}
-                </div>
-            </div>
+    <div className="relative z-10 w-full space-y-8 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-10 w-36" />
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[...Array(4)].map((_, i) => <ClientCardSkeleton key={i} />)}
         </div>
     </div>
 );
