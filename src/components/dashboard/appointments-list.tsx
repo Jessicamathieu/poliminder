@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { appointments } from "@/lib/data";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export default function AppointmentsList() {
     const upcomingAppointments = appointments
@@ -19,7 +21,9 @@ export default function AppointmentsList() {
                 <p className="text-sm font-medium leading-none">{appointment.client}</p>
                 <p className="text-sm text-muted-foreground">{appointment.service}</p>
             </div>
-            <div className="ml-auto font-medium">{appointment.date.split(' ')[1]}</div>
+            <div className="ml-auto font-medium">
+              {appointment.start ? format(appointment.start, 'HH:mm', { locale: fr }) : 'Date inconnue'}
+            </div>
             </div>
         ))
       ) : (
