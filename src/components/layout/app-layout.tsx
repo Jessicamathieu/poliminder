@@ -4,14 +4,14 @@ import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { usePathname } from 'next/navigation';
-import { getPageAccentColor } from '@/lib/colors';
+import { getPageAccentColors } from '@/lib/colors';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const accentColor = getPageAccentColor(pathname);
+  const { primary: accentColor, foreground: accentForeground } = getPageAccentColors(pathname);
 
   return (
-    <SidebarProvider style={{ '--primary': accentColor } as React.CSSProperties}>
+    <SidebarProvider style={{ '--primary': accentColor, '--primary-foreground': accentForeground } as React.CSSProperties}>
       <Sidebar />
       <div className="flex flex-col flex-1">
         <Header />

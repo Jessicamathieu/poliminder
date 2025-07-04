@@ -1,15 +1,20 @@
 // HSL values for use in CSS
-const COLORS = {
-  dashboard: '231 79% 52%',     // Blue: #2743e3
-  clients: '60 100% 50%',       // Yellow: #ffff00
-  services: '90 90% 45%',       // Vert Pomme Flash (légèrement assombri)
-  appointments: '35 97% 57%',   // Orange Flash (plus riche)
-  projects: '330 90% 65%',      // Rose Bonbon
-  expenses: '262 50% 50%',      // Mauve (plus bleuté)
-  admin: '0 72% 51%',           // Rouge
+interface AccentColors {
+  primary: string;
+  foreground: string;
+}
+
+const COLORS: { [key: string]: AccentColors } = {
+  dashboard:    { primary: '231 79% 52%', foreground: '0 0% 98%' },     // Blue, white text
+  clients:      { primary: '54 95% 55%', foreground: '240 10% 3.9%' },  // Yellow, black text
+  services:     { primary: '90 90% 45%', foreground: '0 0% 98%' },     // Vert Pomme, white text
+  appointments: { primary: '35 97% 57%', foreground: '0 0% 98%' },   // Orange Flash, white text
+  projects:     { primary: '330 90% 65%', foreground: '0 0% 98%' },      // Rose Bonbon, white text
+  expenses:     { primary: '262 50% 50%', foreground: '0 0% 98%' },      // Mauve, white text
+  admin:        { primary: '0 72% 51%', foreground: '0 0% 98%' },       // Rouge, white text
 };
 
-export function getPageAccentColor(pathname: string): string {
+export function getPageAccentColors(pathname: string): AccentColors {
   if (pathname.startsWith('/clients')) return COLORS.clients;
   if (pathname.startsWith('/services')) return COLORS.services;
   if (pathname.startsWith('/appointments')) return COLORS.appointments;
