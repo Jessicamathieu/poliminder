@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
-import { collection, onSnapshot, query, where, Timestamp } from "firebase/firestore";
+import { collection, onSnapshot, query, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Appointment } from "@/lib/types";
-import { ChevronLeft, ChevronRight, PlusCircle, Camera } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { add, format, startOfWeek, sub } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -37,8 +37,6 @@ export default function AppointmentsPage() {
     setIsLoading(true);
     const appointmentsCol = collection(db, 'appointments');
     
-    // Pour l'instant, on récupère tous les rendez-vous. 
-    // On pourrait filtrer par date pour optimiser.
     const q = query(appointmentsCol);
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -67,19 +65,13 @@ export default function AppointmentsPage() {
       </AppLayout>
     );
   }
-
-  const handleDateChange = (amount: number, unit: "days" | "weeks" | "months") => {
-    setCurrentDate(add(currentDate, { [unit]: amount }));
-  };
   
   const handlePrevious = () => {
     if (view === 'week') setCurrentDate(sub(currentDate, { weeks: 1 }));
-    // Ajouter logique pour jour et mois
   };
   
   const handleNext = () => {
      if (view === 'week') setCurrentDate(add(currentDate, { weeks: 1 }));
-    // Ajouter logique pour jour et mois
   };
   
   const handleToday = () => {
@@ -90,42 +82,79 @@ export default function AppointmentsPage() {
     if (view === 'week') {
       const start = startOfWeek(currentDate, { locale: fr });
       const end = add(start, { days: 6 });
-      return `${format(start, 'd MMMM', { locale: fr })} - ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+      const startMonth = format(start, 'MMMM', { locale: fr });
+      const endMonth = format(end, 'MMMM', { locale: fr });
+      const startYear = format(start, 'yyyy', { locale: fr });
+      const endYear = format(end, 'yyyy', { locale: fr });
+
+      if (startMonth === endMonth) {
+        return `${format(start, 'd')} - ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+      } else if (startYear === endYear) {
+         return `${format(start, 'd MMMM', { locale: fr })} - ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+      }
+      return `${format(start, 'd MMMM yyyy', { locale: fr })} - ${format(end, 'd MMMM yyyy', { locale: fr })}`;
     }
     return format(currentDate, "MMMM yyyy", { locale: fr });
   };
   
   return (
     <AppLayout>
-      <div className="flex h-full flex-col">
-        <header className="flex flex-none items-center justify-between border-b border-border p-4">
-          <div className="flex items-center gap-2">
-            <Button onClick={handleToday} variant="default">Aujourd'hui</Button>
-            <Button variant="ghost" size="icon" onClick={handlePrevious}><ChevronLeft/></Button>
-            <Button variant="ghost" size="icon" onClick={handleNext}><ChevronRight /></Button>
-            <h2 className="ml-4 text-lg font-semibold text-primary">{formattedDate()}</h2>
-          </div>
-          <div className="flex items-center gap-4">
-             <div className="hidden rounded-md bg-muted p-0.5 sm:flex">
-              <Button onClick={() => setView('day')} variant={view === 'day' ? 'outline' : 'ghost'} size="sm" disabled>Jour</Button>
-              <Button onClick={() => setView('week')} variant={view === 'week' ? 'outline' : 'ghost'} size="sm">Semaine</Button>
-              <Button onClick={() => setView('month')} variant={view === 'month' ? 'outline' : 'ghost'} size="sm" disabled>Mois</Button>
+      <>
+        <div
+          className="absolute inset-x-0 top-0 z-0 h-96"
+          style={{
+              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
+          }}
+        />
+        <div
+            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
+            style={{
+                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
+                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
+            }}
+        />
+        <div className="relative z-10 flex h-full flex-col p-4 pt-6 md:p-8">
+          <div className="flex flex-none items-center justify-between gap-4 pb-6">
+            <h1 className="flex items-center gap-3 text-3xl font-bold font-headline tracking-tight">
+              <Calendar className="h-8 w-8 text-primary" />
+              Agenda
+            </h1>
+            <div className="flex items-center gap-2">
+              <ExtractFromPhotoDialog />
+              <AddAppointmentDialog />
             </div>
-            <ExtractFromPhotoDialog />
-            <AddAppointmentDialog />
           </div>
-        </header>
+          
+          <div className="flex flex-1 flex-col overflow-hidden rounded-xl border bg-card shadow-lg">
+            <header className="flex flex-none items-center justify-between border-b p-4">
+              <div className="flex items-center gap-4">
+                <Button onClick={handleToday} variant="outline" className="hidden sm:flex">Aujourd'hui</Button>
+                <div className="flex items-center rounded-md border">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 border-r rounded-r-none" onClick={handlePrevious}><ChevronLeft className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-l-none" onClick={handleNext}><ChevronRight className="h-4 w-4" /></Button>
+                </div>
+                <h2 className="text-lg font-semibold capitalize text-foreground">{formattedDate()}</h2>
+              </div>
+              <div className="hidden rounded-md bg-muted p-0.5 sm:flex">
+                <Button onClick={() => setView('day')} variant={view === 'day' ? 'secondary' : 'ghost'} size="sm" disabled>Jour</Button>
+                <Button onClick={() => setView('week')} variant={view === 'week' ? 'secondary' : 'ghost'} size="sm">Semaine</Button>
+                <Button onClick={() => setView('month')} variant={view === 'month' ? 'secondary' : 'ghost'} size="sm" disabled>Mois</Button>
+              </div>
+            </header>
 
-        <div className="flex-1 overflow-auto">
-          {isLoading ? (
-            <div className="p-8">
-              <Skeleton className="h-[600px] w-full" />
+            <div className="flex-1 overflow-auto bg-background/50">
+              {isLoading ? (
+                <div className="p-8">
+                  <Skeleton className="h-[600px] w-full rounded-lg" />
+                </div>
+              ) : (
+                <AppointmentWeekView currentDate={currentDate} appointments={appointments} />
+              )}
             </div>
-          ) : (
-            <AppointmentWeekView currentDate={currentDate} appointments={appointments} />
-          )}
+          </div>
         </div>
-      </div>
+      </>
     </AppLayout>
   );
 }
