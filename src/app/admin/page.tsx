@@ -6,10 +6,12 @@ import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading) {
@@ -20,6 +22,13 @@ export default function AdminPage() {
       }
     }
   }, [user, loading, router]);
+
+  const handleNotImplemented = () => {
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "Cette fonctionnalité est en cours de développement.",
+    });
+  };
 
   if (loading || !user || user.role !== 'admin') {
      return (
@@ -63,17 +72,17 @@ export default function AdminPage() {
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Gestion des Utilisateurs</h3>
                   <p className="text-muted-foreground mb-4">Ajoutez, modifiez ou supprimez des utilisateurs.</p>
-                  <Button>Gérer les Utilisateurs</Button>
+                  <Button onClick={handleNotImplemented}>Gérer les Utilisateurs</Button>
               </div>
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
                   <p className="text-muted-foreground mb-4">Connectez-vous à votre compte QuickBooks Canada.</p>
-                  <Button variant="secondary">Connecter QuickBooks</Button>
+                  <Button variant="secondary" onClick={handleNotImplemented}>Connecter QuickBooks</Button>
               </div>
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Rapports Avancés</h3>
                   <p className="text-muted-foreground mb-4">Générez des rapports financiers et opérationnels détaillés.</p>
-                  <Button>Voir les Rapports</Button>
+                  <Button onClick={handleNotImplemented}>Voir les Rapports</Button>
               </div>
             </CardContent>
           </Card>

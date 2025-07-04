@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { DollarSign, Wallet, CalendarClock, AlertTriangle, Users, Briefcase, FileText, Settings } from "lucide-react";
+import { DollarSign, Wallet, CalendarClock, AlertTriangle } from "lucide-react";
 import KpiCard from "@/components/dashboard/kpi-card";
 import RevenueChart from "@/components/dashboard/revenue-chart";
 import AppointmentsList from "@/components/dashboard/appointments-list";
@@ -82,7 +82,7 @@ export default function Dashboard() {
 
 const AdminDashboard = () => (
   <div className="space-y-4">
-    <Card className="bg-card/50">
+    <Card className="bg-card/50 animate-fade-in-up">
         <CardHeader>
             <CardTitle className="font-headline text-primary">Bonjour, Jessica !</CardTitle>
             <CardDescription>
@@ -96,6 +96,7 @@ const AdminDashboard = () => (
         value="$12,345"
         icon={DollarSign}
         trend="+20.1% vs le mois dernier"
+        animationDelay="100ms"
       />
       <KpiCard
         title="Dépenses (ce mois-ci)"
@@ -103,6 +104,7 @@ const AdminDashboard = () => (
         icon={Wallet}
         trend="+15% vs le mois dernier"
         trendColor="text-orange-500"
+        animationDelay="200ms"
       />
       <KpiCard
         title="Factures en retard"
@@ -110,16 +112,18 @@ const AdminDashboard = () => (
         icon={AlertTriangle}
         trend="2 nouvelles cette semaine"
         trendColor="text-destructive"
+        animationDelay="300ms"
       />
       <KpiCard
         title="Rendez-vous à venir"
         value="8"
         icon={CalendarClock}
         trend="3 aujourd'hui"
+        animationDelay="400ms"
       />
     </div>
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-      <Card className="col-span-4">
+      <Card className="col-span-4 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
         <CardHeader>
           <CardTitle className="font-headline text-primary">Aperçu des revenus</CardTitle>
         </CardHeader>
@@ -127,7 +131,7 @@ const AdminDashboard = () => (
           <RevenueChart />
         </CardContent>
       </Card>
-      <Card className="col-span-4 lg:col-span-3">
+      <Card className="col-span-4 lg:col-span-3 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
         <CardHeader>
           <CardTitle className="font-headline text-primary">Rendez-vous à venir</CardTitle>
         </CardHeader>

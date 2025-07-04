@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { expenses } from "@/lib/data";
 import ExpenseFormAI from "@/components/ai/expense-form-ai";
+import { Wallet } from "lucide-react";
 
 export default function ExpensesPage() {
   const { user, loading } = useAuth();
@@ -42,13 +43,16 @@ export default function ExpensesPage() {
         />
         <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">Dépenses</h1>
+            <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight font-headline">
+              <Wallet className="h-8 w-8 text-primary" />
+              Dépenses
+            </h1>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
               <Card>
                   <CardHeader>
                       <CardTitle className="font-headline text-primary">Ajouter une dépense avec l'IA</CardTitle>
-                      <CardDescription>Décrivez votre dépense en langage naturel. Par exemple : "Ajoute une dépense essence 80$ chez Shell".</CardDescription>
+                      <CardDescription>Prenez une photo de votre reçu ou importez une image pour que l'IA en extraie les informations.</CardDescription>
                   </CardHeader>
                   <CardContent>
                       <ExpenseFormAI />

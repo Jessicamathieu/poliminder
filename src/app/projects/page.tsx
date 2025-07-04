@@ -11,16 +11,25 @@ import { appointments as staticAppointments } from "@/lib/data";
 import { PlusCircle, FileUp, Calendar, User, FolderKanban } from "lucide-react";
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProjectsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
   }, [user, loading, router]);
+
+  const handleNotImplemented = () => {
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "Cette fonctionnalité est en cours de développement.",
+    });
+  };
 
   if (loading || !user) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
@@ -66,12 +75,12 @@ export default function ProjectsPage() {
               Suivi des Tâches & Projets
             </h1>
             <div className="flex items-center space-x-2">
-              <Button>
+              <Button onClick={handleNotImplemented}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Nouvelle Tâche
               </Button>
               {user.role === 'admin' && (
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleNotImplemented}>
                   <FileUp className="mr-2 h-4 w-4" />
                   Exporter
                 </Button>
