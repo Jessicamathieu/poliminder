@@ -87,7 +87,7 @@ const AppointmentWeekView = ({ currentDate, appointments }: AppointmentWeekViewP
                   return (
                     <div
                       key={appointment.id}
-                      className="absolute w-[95%] left-1 rounded-lg p-2 text-xs bg-primary/20 border-l-4 border-primary text-primary-foreground"
+                      className="absolute w-[95%] left-1 rounded-lg p-2 text-xs bg-primary/20 border-l-4 border-primary text-primary-foreground transition-all hover:shadow-lg hover:bg-primary/30"
                       style={{ top: `${top}px`, height: `${height}px` }}
                     >
                       <p className="font-bold text-primary">{appointment.clientName}</p>

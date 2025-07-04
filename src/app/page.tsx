@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DollarSign, Wallet, CalendarClock, AlertTriangle, Users, Briefcase, FileText, Settings } from "lucide-react";
 import KpiCard from "@/components/dashboard/kpi-card";
 import RevenueChart from "@/components/dashboard/revenue-chart";
@@ -82,6 +82,14 @@ export default function Dashboard() {
 
 const AdminDashboard = () => (
   <div className="space-y-4">
+    <Card className="bg-card/50">
+        <CardHeader>
+            <CardTitle className="font-headline text-primary">Bonjour, Jessica !</CardTitle>
+            <CardDescription>
+                Voici une vue d'ensemble de votre entreprise aujourd'hui.
+            </CardDescription>
+        </CardHeader>
+    </Card>
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <KpiCard
         title="Revenus (ce mois-ci)"
@@ -133,9 +141,9 @@ const AdminDashboard = () => (
 
 const FieldDashboard = () => (
     <div className="space-y-4">
-        <Card>
+        <Card className="bg-card/50">
             <CardHeader>
-                <CardTitle className="font-headline text-primary">Bonjour, Mikael!</CardTitle>
+                <CardTitle className="font-headline text-primary">Bonjour, Mikael !</CardTitle>
             </CardHeader>
             <CardContent>
                 <p>Voici un aperçu de votre journée. Prêt à commencer?</p>

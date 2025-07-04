@@ -81,7 +81,7 @@ export default function ProjectsPage() {
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {appointments.map((appointment) => (
-              <Card key={appointment.id} className="transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/40">
+              <Card key={appointment.id} className="transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/40">
                 <CardHeader>
                   <CardTitle className="font-headline text-lg text-primary">{appointment.service}</CardTitle>
                 </CardHeader>
@@ -92,7 +92,7 @@ export default function ProjectsPage() {
                   </div>
                    <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    <span>{format(appointment.start, "d MMMM yyyy 'à' HH:mm", { locale: fr })}</span>
+                    <span>{appointment.start ? format(appointment.start, "d MMMM yyyy 'à' HH:mm", { locale: fr }) : 'Date inconnue'}</span>
                   </div>
                   <div className="flex items-center justify-between pt-2">
                      <Badge variant={getStatusVariant(appointment.status) as any}>{appointment.status}</Badge>
