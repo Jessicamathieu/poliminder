@@ -5,7 +5,7 @@ const COLORS = {
   services: '123 76% 42%',      // Green: #0ccc34
   appointments: '29 97% 57%',   // Orange: #fb9026
   projects: '330 90% 65%',      // Rose Bonbon
-  expenses: '270 50% 60%',      // Mauve
+  expenses: '270 50% 50%',      // Mauve (plus foncé)
   admin: '0 72% 51%',           // Rouge
 };
 
