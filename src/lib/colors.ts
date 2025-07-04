@@ -4,9 +4,9 @@ const COLORS = {
   clients: '60 100% 50%',       // Yellow: #ffff00
   services: '123 76% 42%',      // Green: #0ccc34
   appointments: '29 97% 57%',   // Orange: #fb9026
-  projects: '300 100% 50%',     // Pink: #ff00ff
-  expenses: '0 72% 51%',        // Red
-  admin: '240 5% 65%',          // Gray
+  projects: '330 90% 65%',      // Rose Bonbon
+  expenses: '270 50% 60%',      // Mauve
+  admin: '0 72% 51%',           // Rouge
 };
 
 export function getPageAccentColor(pathname: string): string {
