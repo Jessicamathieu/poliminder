@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { add, format } from "date-fns";
-import { fr } from "fr-date-fns/locale";
+import { fr } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import {
