@@ -10,7 +10,7 @@ const COLORS: { [key: string]: AccentColors } = {
   services:     { primary: '90 90% 45%', foreground: '0 0% 98%' },     // Vert Pomme, white text
   appointments: { primary: '35 97% 57%', foreground: '0 0% 98%' },   // Orange Flash, white text
   projects:     { primary: '330 90% 65%', foreground: '0 0% 98%' },      // Rose Bonbon, white text
-  expenses:     { primary: '262 50% 50%', foreground: '0 0% 98%' },      // Mauve, white text
+  expenses:     { primary: '262 35% 60%', foreground: '0 0% 98%' },      // Mauve métallique, white text
   admin:        { primary: '0 72% 51%', foreground: '0 0% 98%' },       // Rouge, white text
 };
 
