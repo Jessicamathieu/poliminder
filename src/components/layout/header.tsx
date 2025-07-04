@@ -15,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, LogOut, Sparkles } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import CommandPalette from "@/components/ai/command-palette";
+import AddClientDialog from "../clients/add-client-dialog";
+import ExtractFromPhotoDialog from "../ai/extract-from-photo-dialog";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -22,7 +24,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
+      <header className="sticky top-0 z-20 flex h-16 items-center gap-4 border-b bg-card/80 px-4 backdrop-blur-lg md:px-6">
         <div className="md:hidden">
             <SidebarTrigger />
         </div>
@@ -55,7 +57,7 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </header>
-      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </>
   );
 }

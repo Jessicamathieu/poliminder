@@ -9,7 +9,7 @@ type ClientCardProps = {
 
 export default function ClientCard({ client }: ClientCardProps) {
   return (
-    <Card className="flex flex-col transition-all duration-200 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1">
+    <Card className="flex flex-col transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/40">
       <CardHeader className="flex-row items-center gap-4 pb-4">
         <div className="p-3 rounded-full bg-primary/10">
           <User className="w-6 h-6 text-primary" />

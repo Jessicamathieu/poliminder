@@ -81,7 +81,7 @@ export default function ProjectsPage() {
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {appointments.map((appointment) => (
-              <Card key={appointment.id}>
+              <Card key={appointment.id} className="transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/40">
                 <CardHeader>
                   <CardTitle className="font-headline text-lg text-primary">{appointment.service}</CardTitle>
                 </CardHeader>
