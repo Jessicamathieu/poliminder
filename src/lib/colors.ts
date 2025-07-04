@@ -2,7 +2,7 @@
 const COLORS = {
   dashboard: '231 79% 52%',     // Blue: #2743e3
   clients: '60 100% 50%',       // Yellow: #ffff00
-  services: '123 76% 42%',      // Green: #0ccc34
+  services: '90 70% 50%',       // Lime Green: #a6e64d
   appointments: '29 97% 57%',   // Orange: #fb9026
   projects: '330 90% 65%',      // Rose Bonbon
   expenses: '262 50% 50%',      // Mauve (plus bleuté)
