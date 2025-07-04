@@ -5,13 +5,13 @@ interface AccentColors {
 }
 
 const COLORS: { [key: string]: AccentColors } = {
-  dashboard:    { primary: '231 79% 52%', foreground: '0 0% 98%' },     // Blue, white text
+  dashboard:    { primary: '231 79% 52%', foreground: '240 10% 3.9%' },     // Blue, black text
   clients:      { primary: '54 95% 55%', foreground: '240 10% 3.9%' },  // Yellow, black text
-  services:     { primary: '90 90% 45%', foreground: '0 0% 98%' },     // Vert Pomme, white text
-  appointments: { primary: '35 97% 57%', foreground: '0 0% 98%' },   // Orange Flash, white text
-  projects:     { primary: '330 90% 65%', foreground: '0 0% 98%' },      // Rose Bonbon, white text
-  expenses:     { primary: '262 35% 60%', foreground: '0 0% 98%' },      // Mauve métallique, white text
-  admin:        { primary: '0 72% 51%', foreground: '0 0% 98%' },       // Rouge, white text
+  services:     { primary: '90 90% 45%', foreground: '240 10% 3.9%' },     // Vert Pomme, black text
+  appointments: { primary: '35 97% 57%', foreground: '240 10% 3.9%' },   // Orange Flash, black text
+  projects:     { primary: '330 90% 65%', foreground: '240 10% 3.9%' },      // Rose Bonbon, black text
+  expenses:     { primary: '275 100% 55%', foreground: '240 10% 3.9%' },      // Mauve fluo, black text
+  admin:        { primary: '0 72% 51%', foreground: '240 10% 3.9%' },       // Rouge, black text
 };
 
 export function getPageAccentColors(pathname: string): AccentColors {
