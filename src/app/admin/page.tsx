@@ -54,24 +54,24 @@ export default function AdminPage() {
           </div>
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline">Paramètres de l'Application</CardTitle>
+              <CardTitle className="font-headline text-primary">Paramètres de l'Application</CardTitle>
               <CardDescription>
                 Gérez ici les paramètres globaux, les utilisateurs et les intégrations.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="p-6 border rounded-lg">
-                  <h3 className="font-semibold text-lg mb-2 font-headline">Gestion des Utilisateurs</h3>
+                  <h3 className="font-headline text-lg mb-2 text-primary">Gestion des Utilisateurs</h3>
                   <p className="text-muted-foreground mb-4">Ajoutez, modifiez ou supprimez des utilisateurs.</p>
                   <Button>Gérer les Utilisateurs</Button>
               </div>
               <div className="p-6 border rounded-lg">
-                  <h3 className="font-semibold text-lg mb-2 font-headline">Intégration QuickBooks</h3>
+                  <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
                   <p className="text-muted-foreground mb-4">Connectez-vous à votre compte QuickBooks Canada.</p>
                   <Button variant="secondary">Connecter QuickBooks</Button>
               </div>
               <div className="p-6 border rounded-lg">
-                  <h3 className="font-semibold text-lg mb-2 font-headline">Rapports Avancés</h3>
+                  <h3 className="font-headline text-lg mb-2 text-primary">Rapports Avancés</h3>
                   <p className="text-muted-foreground mb-4">Générez des rapports financiers et opérationnels détaillés.</p>
                   <Button>Voir les Rapports</Button>
               </div>

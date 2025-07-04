@@ -113,7 +113,7 @@ const AdminDashboard = () => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
       <Card className="col-span-4">
         <CardHeader>
-          <CardTitle className="font-headline">Aperçu des revenus</CardTitle>
+          <CardTitle className="font-headline text-primary">Aperçu des revenus</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
           <RevenueChart />
@@ -121,7 +121,7 @@ const AdminDashboard = () => (
       </Card>
       <Card className="col-span-4 lg:col-span-3">
         <CardHeader>
-          <CardTitle className="font-headline">Rendez-vous à venir</CardTitle>
+          <CardTitle className="font-headline text-primary">Rendez-vous à venir</CardTitle>
         </CardHeader>
         <CardContent>
           <AppointmentsList />
@@ -135,7 +135,7 @@ const FieldDashboard = () => (
     <div className="space-y-4">
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Bonjour, Mikael!</CardTitle>
+                <CardTitle className="font-headline text-primary">Bonjour, Mikael!</CardTitle>
             </CardHeader>
             <CardContent>
                 <p>Voici un aperçu de votre journée. Prêt à commencer?</p>
@@ -143,7 +143,7 @@ const FieldDashboard = () => (
         </Card>
         <Card className="col-span-1">
             <CardHeader>
-                <CardTitle className="font-headline">Vos rendez-vous à venir</CardTitle>
+                <CardTitle className="font-headline text-primary">Vos rendez-vous à venir</CardTitle>
             </CardHeader>
             <CardContent>
                 <AppointmentsList />

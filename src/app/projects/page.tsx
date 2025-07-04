@@ -44,26 +44,34 @@ export default function ProjectsPage() {
 
   return (
     <AppLayout>
-       <div className="relative h-full">
+      <>
         <div
-          className="absolute inset-x-0 top-0 z-0 h-full"
+          className="absolute inset-x-0 top-0 z-0 h-96"
           style={{
-            background: 'linear-gradient(180deg, hsl(var(--primary)/.15) 0%, hsl(var(--background)) 50%)'
+              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
           }}
+        />
+        <div
+            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
+            style={{
+                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
+                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
+            }}
         />
         <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center">
-              <FolderKanban className="mr-4 h-8 w-8" />
+              <FolderKanban className="mr-4 h-8 w-8 text-primary" />
               Suivi des Tâches & Projets
             </h1>
             <div className="flex items-center space-x-2">
-              <Button className="shadow-lg hover:shadow-primary/40">
+              <Button>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Nouvelle Tâche
               </Button>
               {user.role === 'admin' && (
-                <Button variant="outline" className="shadow-lg">
+                <Button variant="outline">
                   <FileUp className="mr-2 h-4 w-4" />
                   Exporter
                 </Button>
@@ -73,7 +81,7 @@ export default function ProjectsPage() {
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {appointments.map((appointment) => (
-              <Card key={appointment.id} className="border-2 border-primary/20 rounded-2xl shadow-md hover:shadow-xl hover:border-primary/50 transition-all duration-300 ease-in-out">
+              <Card key={appointment.id}>
                 <CardHeader>
                   <CardTitle className="font-headline text-lg text-primary">{appointment.service}</CardTitle>
                 </CardHeader>
@@ -95,7 +103,7 @@ export default function ProjectsPage() {
             ))}
           </div>
         </div>
-      </div>
+      </>
     </AppLayout>
   );
 }

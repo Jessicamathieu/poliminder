@@ -100,10 +100,10 @@ export default function AppointmentsPage() {
       <div className="flex h-full flex-col">
         <header className="flex flex-none items-center justify-between border-b border-border p-4">
           <div className="flex items-center gap-2">
-            <Button onClick={handleToday} variant="outline">Aujourd'hui</Button>
+            <Button onClick={handleToday} variant="default">Aujourd'hui</Button>
             <Button variant="ghost" size="icon" onClick={handlePrevious}><ChevronLeft/></Button>
             <Button variant="ghost" size="icon" onClick={handleNext}><ChevronRight /></Button>
-            <h2 className="ml-4 text-lg font-semibold text-foreground">{formattedDate()}</h2>
+            <h2 className="ml-4 text-lg font-semibold text-primary">{formattedDate()}</h2>
           </div>
           <div className="flex items-center gap-4">
              <div className="hidden rounded-md bg-muted p-0.5 sm:flex">

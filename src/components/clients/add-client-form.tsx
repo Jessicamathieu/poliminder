@@ -62,7 +62,7 @@ export default function AddClientForm({ onClientAdded }: AddClientFormProps) {
         <div className="p-3 border-2 rounded-full bg-primary/10 border-primary/20">
           <Users className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold font-headline">Nouveau Client</h2>
+        <h2 className="text-2xl font-bold font-headline text-primary">Nouveau Client</h2>
         <p className="text-sm text-muted-foreground">Remplissez les informations ci-dessous.</p>
       </div>
       <Form {...form}>

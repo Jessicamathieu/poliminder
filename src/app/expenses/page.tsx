@@ -47,7 +47,7 @@ export default function ExpensesPage() {
           <div className="grid gap-6 lg:grid-cols-2">
               <Card>
                   <CardHeader>
-                      <CardTitle className="font-headline">Ajouter une dépense avec l'IA</CardTitle>
+                      <CardTitle className="font-headline text-primary">Ajouter une dépense avec l'IA</CardTitle>
                       <CardDescription>Décrivez votre dépense en langage naturel. Par exemple : "Ajoute une dépense essence 80$ chez Shell".</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -56,7 +56,7 @@ export default function ExpensesPage() {
               </Card>
               <Card>
               <CardHeader>
-                  <CardTitle className="font-headline">Dépenses Récentes</CardTitle>
+                  <CardTitle className="font-headline text-primary">Dépenses Récentes</CardTitle>
                   <CardDescription>Voici la liste de vos dernières dépenses enregistrées.</CardDescription>
               </CardHeader>
               <CardContent>

@@ -88,7 +88,7 @@ export default function ServicesPage() {
           </div>
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline">Liste des Services</CardTitle>
+              <CardTitle className="font-headline text-primary">Liste des Services</CardTitle>
               <CardDescription>Gérez ici les prestations que votre entreprise propose.</CardDescription>
             </CardHeader>
             <CardContent>
