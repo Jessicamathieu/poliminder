@@ -48,19 +48,8 @@ export default function AdminPage() {
 
   const handleConnectQuickBooks = async () => {
     setIsConnecting(true);
-    
-    const authUrl = process.env.NEXT_PUBLIC_QUICKBOOKS_AUTH_URL;
-    if (!authUrl) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de configuration",
-        description: "L'URL d'authentification QuickBooks n'est pas configurée.",
-      });
-      setIsConnecting(false);
-      return;
-    }
-    
-    window.location.href = authUrl;
+    // Redirige vers la route d'API qui gère l'authentification
+    window.location.href = '/api/quickbooks/auth';
   };
   
   const handleDisconnectQuickBooks = async () => {
