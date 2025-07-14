@@ -48,28 +48,43 @@ export default function AdminPage() {
 
   const handleConnectQuickBooks = async () => {
     setIsConnecting(true);
-    // L'URL de votre fonction Firebase qui initie l'authentification
-    // TODO: Remplacez par votre URL de fonction réelle une fois déployée.
-    const authUrl = "http://localhost:5001/poliminder-app/northamerica-northeast1/quickbooksAuth"; 
     
-    // Pour les besoins du développement, nous utilisons l'URL de l'émulateur local.
-    // En production, cette URL devra être mise à jour avec l'URL de la fonction déployée.
+    const authUrl = process.env.NEXT_PUBLIC_QUICKBOOKS_AUTH_URL;
+    if (!authUrl) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de configuration",
+        description: "L'URL d'authentification QuickBooks n'est pas configurée.",
+      });
+      setIsConnecting(false);
+      return;
+    }
+    
     window.location.href = authUrl;
   };
   
   const handleDisconnectQuickBooks = async () => {
       const settingsDocRef = doc(db, "settings", "quickbooks");
-      await setDoc(settingsDocRef, { 
-          connected: false,
-          accessToken: null,
-          refreshToken: null,
-          realmId: null,
-          disconnectedAt: serverTimestamp()
-      }, { merge: true });
-      toast({
-          title: "QuickBooks déconnecté",
-          description: "La synchronisation automatique est désactivée.",
-      });
+      try {
+        await setDoc(settingsDocRef, { 
+            connected: false,
+            accessToken: null,
+            refreshToken: null,
+            realmId: null,
+            disconnectedAt: serverTimestamp()
+        }, { merge: true });
+        toast({
+            title: "QuickBooks déconnecté",
+            description: "La synchronisation automatique est désactivée.",
+        });
+      } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Impossible de se déconnecter de QuickBooks.",
+        });
+        console.error("Erreur de déconnexion:", error);
+      }
   };
 
   if (loading || !user || user.role !== 'admin') {
