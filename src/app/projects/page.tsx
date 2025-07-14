@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useToast } from "@/hooks/use-toast";
 import { db } from "@/lib/firebase";
-import { collection, onSnapshot, query, doc, updateDoc, Timestamp } from "firebase/firestore";
+import { collection, onSnapshot, query, doc, updateDoc, Timestamp, orderBy } from "firebase/firestore";
 import type { Appointment } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -38,7 +38,7 @@ export default function ProjectsPage() {
 
     setIsLoading(true);
     const appointmentsCol = collection(db, 'appointments');
-    const q = query(appointmentsCol);
+    const q = query(appointmentsCol, orderBy("start", "desc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const appointmentsData = querySnapshot.docs.map(doc => {
@@ -51,6 +51,9 @@ export default function ProjectsPage() {
         } as Appointment;
       });
       setAppointments(appointmentsData);
+      setIsLoading(false);
+    }, (error) => {
+      console.error("Erreur lors de la récupération des tâches :", error);
       setIsLoading(false);
     });
 
@@ -83,29 +86,7 @@ export default function ProjectsPage() {
     });
   };
 
-  if (authLoading || isLoading || !user) {
-    return (
-      <AppLayout>
-        <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center">
-                    <FolderKanban className="mr-4 h-8 w-8 text-primary" />
-                    Suivi des Tâches & Projets
-                </h1>
-                <div className="flex items-center space-x-2">
-                    <Skeleton className="h-10 w-36" />
-                    {user?.role === 'admin' && <Skeleton className="h-10 w-28" />}
-                </div>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {[...Array(8)].map((_, i) => <ProjectCardSkeleton key={i} />)}
-            </div>
-        </div>
-      </AppLayout>
-    );
-  }
-
-  const getStatusVariant = (status?: string) => {
+  const getStatusVariant = (status?: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case "Terminé":
         return "default";
@@ -146,7 +127,7 @@ export default function ProjectsPage() {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Nouvelle Tâche
               </Button>
-              {user.role === 'admin' && (
+              {user?.role === 'admin' && (
                 <Button variant="outline" onClick={handleNotImplemented}>
                   <FileUp className="mr-2 h-4 w-4" />
                   Exporter
@@ -155,47 +136,58 @@ export default function ProjectsPage() {
             </div>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {appointments.map((appointment) => (
-              <Card key={appointment.id} className="transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 flex flex-col">
-                <CardHeader className="flex-row items-start justify-between">
-                  <CardTitle className="font-headline text-lg text-primary">{appointment.serviceNames?.join(', ') || appointment.service}</CardTitle>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 -mt-2 -mr-2">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'À venir')}>
-                        Marquer comme "À venir"
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Terminé')}>
-                        Marquer comme "Terminé"
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Annulé')}>
-                        Marquer comme "Annulé"
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </CardHeader>
-                <CardContent className="space-y-3 flex-grow flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="h-4 w-4" />
-                    <span className="font-medium text-foreground">{appointment.clientName || appointment.client}</span>
-                  </div>
-                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{appointment.start ? format(appointment.start, "d MMMM yyyy 'à' HH:mm", { locale: fr }) : 'Date inconnue'}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 mt-auto">
-                     <Badge variant={getStatusVariant(appointment.status) as any}>{appointment.status || "N/A"}</Badge>
-                     {user.role === 'admin' && appointment.amount && <span className="font-bold text-lg">${appointment.amount.toFixed(2)}</span>}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {[...Array(8)].map((_, i) => <ProjectCardSkeleton key={i} />)}
+            </div>
+          ) : appointments.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {appointments.map((appointment, index) => (
+                  <Card key={appointment.id} className="transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 flex flex-col animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                    <CardHeader className="flex-row items-start justify-between">
+                      <CardTitle className="font-headline text-lg text-primary">{appointment.serviceNames?.join(', ') || appointment.service}</CardTitle>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 -mt-2 -mr-2">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'À venir')}>
+                            Marquer comme "À venir"
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Terminé')}>
+                            Marquer comme "Terminé"
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Annulé')}>
+                            Marquer comme "Annulé"
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </CardHeader>
+                    <CardContent className="space-y-3 flex-grow flex flex-col">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <User className="h-4 w-4" />
+                        <span className="font-medium text-foreground">{appointment.clientName || appointment.client}</span>
+                      </div>
+                       <div className="flex items-center gap-2 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        <span>{appointment.start ? format(appointment.start, "d MMMM yyyy 'à' HH:mm", { locale: fr }) : 'Date inconnue'}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 mt-auto">
+                         <Badge variant={getStatusVariant(appointment.status)}>{appointment.status || "N/A"}</Badge>
+                         {user?.role === 'admin' && appointment.amount && <span className="font-bold text-lg">${appointment.amount.toFixed(2)}</span>}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
+                <h3 className="text-xl font-semibold font-headline text-primary">Aucune tâche trouvée</h3>
+                <p className="mt-2 text-muted-foreground">Créez un nouveau rendez-vous pour qu'il apparaisse ici.</p>
+            </div>
+          )}
         </div>
       </>
     </AppLayout>
@@ -205,8 +197,9 @@ export default function ProjectsPage() {
 
 const ProjectCardSkeleton = () => (
     <Card className="flex flex-col">
-        <CardHeader>
+        <CardHeader className="flex-row items-start justify-between">
             <Skeleton className="h-6 w-3/4" />
+             <Skeleton className="h-8 w-8 rounded-full" />
         </CardHeader>
         <CardContent className="space-y-4">
             <div className="flex items-center gap-2">
@@ -217,12 +210,10 @@ const ProjectCardSkeleton = () => (
                 <Skeleton className="h-4 w-4 rounded-full" />
                 <Skeleton className="h-4 w-3/4" />
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mt-4">
                 <Skeleton className="h-6 w-20" />
                 <Skeleton className="h-6 w-16" />
             </div>
         </CardContent>
     </Card>
 );
-
-    

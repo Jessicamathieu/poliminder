@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -31,14 +32,24 @@ export default function ExpenseFormAI() {
 
     setIsProcessing(true);
     
+    // TODO: Connect to Genkit flow for expense extraction
+    // For now, we simulate the process and show a notification.
     toast({
       title: "Analyse en cours...",
       description: "L'IA analyse votre reçu. Cette fonctionnalité est en cours de développement.",
     });
-    console.log("Processing file:", selectedFile.name);
+    console.log("Processing file for expense extraction:", selectedFile.name);
     
+    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     
+    // On a real implementation, you would get data back from the AI
+    // and potentially pre-fill an expense form or save it directly.
+    toast({
+        title: "Extraction terminée !",
+        description: "Les informations du reçu ont été (simulées) extraites avec succès.",
+    });
+
     setIsProcessing(false);
     setSelectedFile(null);
   };

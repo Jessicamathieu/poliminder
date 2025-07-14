@@ -1,3 +1,4 @@
+
 export interface User {
   name: string;
   role: "admin" | "field";
@@ -27,8 +28,6 @@ export interface Appointment {
   end: Date;
   status: "À venir" | "Terminé" | "Annulé";
   amount?: number;
-
-  // Champs pour le nouvel agenda
   clientId: string;
   clientName: string;
   clientPhone: string;
@@ -37,10 +36,11 @@ export interface Appointment {
   serviceNames: string[];
   isCompleted?: boolean;
   notes?: string;
+  createdAt?: any;
 
-  // Champs dépréciés, gardés pour compatibilité temporaire
-  client: string; 
-  service: string;
+  // Champs dépréciés, à nettoyer potentiellement plus tard
+  client?: string; 
+  service?: string;
   assignedTo?: "Jessica" | "Mikael";
 }
 
@@ -54,15 +54,14 @@ export interface Project {
 
 export interface Expense {
   id:string;
-  date: string;
+  date: Date;
   category: string;
   vendor: string;
   amount: number;
+  createdAt?: any;
 }
 
 export interface ChartData {
     name: string;
     total: number;
 }
-
-    

@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
@@ -9,16 +10,54 @@ import { DollarSign, Wallet, CalendarClock, AlertTriangle } from "lucide-react";
 import KpiCard from "@/components/dashboard/kpi-card";
 import RevenueChart from "@/components/dashboard/revenue-chart";
 import AppointmentsList from "@/components/dashboard/appointments-list";
+import { db } from "@/lib/firebase";
+import { collection, query, where, onSnapshot, Timestamp } from "firebase/firestore";
+import type { Appointment } from "@/lib/types";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [kpiAppointments, setKpiAppointments] = useState(0);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  const fetchAppointments = useCallback(() => {
+    if (!user) return;
+    setDataLoading(true);
+    const appointmentsCol = collection(db, 'appointments');
+    const q = query(appointmentsCol, where("start", ">=", Timestamp.now()), where("status", "==", "À venir"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const appointmentsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          start: (data.start as Timestamp).toDate(),
+          end: (data.end as Timestamp).toDate(),
+        } as Appointment;
+      });
+      setAppointments(appointmentsData);
+      setKpiAppointments(appointmentsData.length);
+      setDataLoading(false);
+    }, (error) => {
+      console.error("Error fetching appointments:", error);
+      setDataLoading(false);
+    });
+
+    return unsubscribe;
+  }, [user]);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
+    } else if(user) {
+      const unsubscribe = fetchAppointments();
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, fetchAppointments]);
 
   if (loading || !user) {
     return (
@@ -73,14 +112,14 @@ export default function Dashboard() {
               {user.role === 'admin' ? "Tableau de Bord de Jessica" : "Tableau de Bord de Mikael"}
             </h1>
           </div>
-          {user.role === "admin" ? <AdminDashboard /> : <FieldDashboard />}
+          {user.role === "admin" ? <AdminDashboard appointments={appointments} kpiAppointments={kpiAppointments} loading={dataLoading} /> : <FieldDashboard appointments={appointments} loading={dataLoading} />}
         </div>
       </>
     </AppLayout>
   );
 }
 
-const AdminDashboard = () => (
+const AdminDashboard = ({ appointments, kpiAppointments, loading }: { appointments: Appointment[], kpiAppointments: number, loading: boolean }) => (
   <div className="space-y-4">
     <Card className="bg-card/50 animate-fade-in-up">
         <CardHeader>
@@ -116,7 +155,7 @@ const AdminDashboard = () => (
       />
       <KpiCard
         title="Rendez-vous à venir"
-        value="8"
+        value={loading ? "..." : kpiAppointments.toString()}
         icon={CalendarClock}
         trend="3 aujourd'hui"
         animationDelay="400ms"
@@ -136,14 +175,14 @@ const AdminDashboard = () => (
           <CardTitle className="font-headline text-primary">Rendez-vous à venir</CardTitle>
         </CardHeader>
         <CardContent>
-          <AppointmentsList />
+          <AppointmentsList appointments={appointments} loading={loading} />
         </CardContent>
       </Card>
     </div>
   </div>
 );
 
-const FieldDashboard = () => (
+const FieldDashboard = ({ appointments, loading }: { appointments: Appointment[], loading: boolean }) => (
     <div className="space-y-4">
         <Card className="bg-card/50">
             <CardHeader>
@@ -158,7 +197,7 @@ const FieldDashboard = () => (
                 <CardTitle className="font-headline text-primary">Vos rendez-vous à venir</CardTitle>
             </CardHeader>
             <CardContent>
-                <AppointmentsList />
+                <AppointmentsList appointments={appointments} loading={loading}/>
             </CardContent>
         </Card>
     </div>
