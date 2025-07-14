@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import ManageUsersDialog from "@/components/admin/manage-users-dialog";
 import { db } from "@/lib/firebase";
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -49,37 +49,23 @@ export default function AdminPage() {
   const handleConnectQuickBooks = async () => {
     setIsConnecting(true);
     // L'URL de votre fonction Firebase qui initie l'authentification
-    // Remplacez par votre URL de fonction réelle une fois déployée.
-    const authUrl = "YOUR_FIREBASE_FUNCTION_AUTH_URL_HERE"; 
+    // TODO: Remplacez par votre URL de fonction réelle une fois déployée.
+    const authUrl = "http://localhost:5001/poliminder-app/northamerica-northeast1/quickbooksAuth"; 
     
-    // Pour les besoins du développement, nous utilisons une URL placeholder
-    // et nous simulons. En production, cela ouvrirait la page de connexion QuickBooks.
-    if(authUrl.includes("YOUR_FIREBASE_FUNCTION_AUTH_URL_HERE")){
-        toast({
-            title: "Configuration requise",
-            description: "Veuillez déployer les fonctions Firebase et mettre à jour l'URL d'authentification.",
-            variant: "destructive"
-        });
-        
-        // Simulation pour le développement
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const settingsDocRef = doc(db, "settings", "quickbooks");
-        await setDoc(settingsDocRef, { connected: true, connectedAt: new Date() });
-
-        setIsConnecting(false);
-         toast({
-            title: "QuickBooks connecté (Simulation) !",
-            description: "Votre compte est maintenant synchronisé.",
-        });
-
-    } else {
-       window.location.href = authUrl;
-    }
+    // Pour les besoins du développement, nous utilisons l'URL de l'émulateur local.
+    // En production, cette URL devra être mise à jour avec l'URL de la fonction déployée.
+    window.location.href = authUrl;
   };
   
   const handleDisconnectQuickBooks = async () => {
       const settingsDocRef = doc(db, "settings", "quickbooks");
-      await setDoc(settingsDocRef, { connected: false });
+      await setDoc(settingsDocRef, { 
+          connected: false,
+          accessToken: null,
+          refreshToken: null,
+          realmId: null,
+          disconnectedAt: serverTimestamp()
+      }, { merge: true });
       toast({
           title: "QuickBooks déconnecté",
           description: "La synchronisation automatique est désactivée.",
@@ -134,8 +120,8 @@ export default function AdminPage() {
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
                   <p className="text-muted-foreground mb-4">
                     {isQuickBooksConnected 
-                        ? "Votre compte QuickBooks est connecté."
-                        : "Connectez-vous à votre compte QuickBooks Canada."
+                        ? "Votre compte QuickBooks est connecté et prêt à synchroniser."
+                        : "Connectez-vous à votre compte QuickBooks Canada pour automatiser la facturation."
                     }
                   </p>
                   {isQuickBooksConnected ? (
@@ -143,7 +129,7 @@ export default function AdminPage() {
                   ) : (
                     <Button variant="secondary" onClick={handleConnectQuickBooks} disabled={isConnecting}>
                         {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {isConnecting ? "Connexion en cours..." : "Connecter QuickBooks"}
+                        {isConnecting ? "Redirection vers QuickBooks..." : "Connecter QuickBooks"}
                     </Button>
                   )}
               </div>

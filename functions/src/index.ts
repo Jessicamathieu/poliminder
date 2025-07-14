@@ -3,11 +3,12 @@
  *
  * @see https://firebase.google.com/docs/functions
  */
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { setGlobalOptions } from "firebase-functions/v2";
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import QuickBooks from "node-quickbooks";
 
@@ -19,16 +20,22 @@ admin.initializeApp();
 setGlobalOptions({ maxInstances: 10 });
 
 const qboConfig = {
-    clientId: functions.config().quickbooks.client_id,
-    clientSecret: functions.config().quickbooks.client_secret,
-    redirectUri: functions.config().quickbooks.redirect_uri,
-    scopes: functions.config().quickbooks.scopes.split(','),
-    environment: functions.config().quickbooks.environment || 'sandbox',
+    clientId: process.env.QUICKBOOKS_CLIENT_ID,
+    clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET,
+    redirectUri: process.env.QUICKBOOKS_REDIRECT_URI,
+    scopes: process.env.QUICKBOOKS_SCOPES?.split(','),
+    environment: process.env.QUICKBOOKS_ENVIRONMENT || 'sandbox',
 };
 
 // Fonction pour initier l'authentification QuickBooks
-export const quickbooksAuth = onRequest(async (request, response) => {
+export const quickbooksAuth = onRequest({ cors: true }, async (request, response) => {
     logger.info("⚡ Fonction quickbooksAuth appelée !");
+    
+    if (!qboConfig.clientId || !qboConfig.clientSecret || !qboConfig.redirectUri || !qboConfig.scopes) {
+        logger.error("Configuration QuickBooks incomplète. Vérifiez les variables d'environnement.");
+        response.status(500).send("Erreur de configuration du serveur.");
+        return;
+    }
 
     const qbo = new QuickBooks(
         qboConfig.clientId,
@@ -44,13 +51,19 @@ export const quickbooksAuth = onRequest(async (request, response) => {
     );
 
     const authUri = qbo.getAuthorizationUri(qboConfig.scopes);
-    logger.info("Redirecting to QuickBooks auth URI:", authUri);
+    logger.info("Redirection vers l'URI d'authentification QuickBooks:", authUri);
     response.redirect(authUri);
 });
 
 // Fonction callback pour gérer la redirection de QuickBooks
 export const quickbooksCallback = onRequest(async (request, response) => {
     logger.info("⚡ Fonction quickbooksCallback appelée !");
+
+    if (!qboConfig.clientId || !qboConfig.clientSecret) {
+        logger.error("Configuration QuickBooks incomplète pour le callback. Vérifiez les variables d'environnement.");
+        response.status(500).send("Erreur de configuration du serveur.");
+        return;
+    }
 
     const qbo = new QuickBooks(
         qboConfig.clientId,
@@ -70,7 +83,7 @@ export const quickbooksCallback = onRequest(async (request, response) => {
         const { access_token, refresh_token, realmId } = tokenResponse;
 
         if (!access_token || !refresh_token || !realmId) {
-            throw new Error("Invalid token response from QuickBooks.");
+            throw new Error("Réponse de jeton invalide de QuickBooks.");
         }
 
         // Sauvegarder les tokens de manière sécurisée (ici, dans Firestore)
@@ -83,16 +96,16 @@ export const quickbooksCallback = onRequest(async (request, response) => {
             realmId: realmId,
             expiresAt: new Date(Date.now() + 3600 * 1000), // Access token expires in 1 hour
             refreshedAt: new Date(),
-        });
+        }, { merge: true });
 
-        logger.info("Successfully received and stored QuickBooks tokens.");
+        logger.info("Tokens QuickBooks reçus et stockés avec succès.");
         
         // Rediriger l'utilisateur vers la page d'administration
-        // Remplacez par l'URL de votre application
-        response.redirect('YOUR_APP_ADMIN_URL_HERE');
+        const appAdminUrl = process.env.APP_ADMIN_URL || '/admin';
+        response.redirect(appAdminUrl);
 
     } catch (error) {
-        logger.error("Error during QuickBooks callback:", error);
+        logger.error("Erreur durant le callback QuickBooks:", error);
         response.status(500).send("Erreur lors de la connexion à QuickBooks.");
     }
 });
@@ -105,4 +118,3 @@ export const helloJessica = onRequest((request, response) => {
   logger.info("⚡ Fonction helloJessica appelée !", { structuredData: true });
   response.status(200).send("Ton app est prête Jessica 🎉");
 });
-
