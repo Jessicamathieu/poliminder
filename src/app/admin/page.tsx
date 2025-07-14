@@ -1,17 +1,21 @@
+
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [isQuickBooksConnected, setIsQuickBooksConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     if (!loading) {
@@ -22,12 +26,43 @@ export default function AdminPage() {
       }
     }
   }, [user, loading, router]);
+  
+  // Simuler la récupération de l'état de connexion
+  useEffect(() => {
+      const savedStatus = localStorage.getItem('quickbooks_connected');
+      if (savedStatus === 'true') {
+          setIsQuickBooksConnected(true);
+      }
+  }, []);
 
   const handleNotImplemented = () => {
     toast({
       title: "Fonctionnalité à venir",
       description: "Cette fonctionnalité est en cours de développement.",
     });
+  };
+
+  const handleConnectQuickBooks = async () => {
+    setIsConnecting(true);
+    // Simuler un appel API
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsQuickBooksConnected(true);
+    localStorage.setItem('quickbooks_connected', 'true');
+    setIsConnecting(false);
+    toast({
+        title: "QuickBooks connecté !",
+        description: "Votre compte est maintenant synchronisé.",
+        variant: "default",
+    });
+  };
+  
+  const handleDisconnectQuickBooks = () => {
+      setIsQuickBooksConnected(false);
+      localStorage.removeItem('quickbooks_connected');
+      toast({
+          title: "QuickBooks déconnecté",
+          description: "La synchronisation automatique est désactivée.",
+      });
   };
 
   if (loading || !user || user.role !== 'admin') {
@@ -76,8 +111,20 @@ export default function AdminPage() {
               </div>
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
-                  <p className="text-muted-foreground mb-4">Connectez-vous à votre compte QuickBooks Canada.</p>
-                  <Button variant="secondary" onClick={handleNotImplemented}>Connecter QuickBooks</Button>
+                  <p className="text-muted-foreground mb-4">
+                    {isQuickBooksConnected 
+                        ? "Votre compte QuickBooks est connecté."
+                        : "Connectez-vous à votre compte QuickBooks Canada."
+                    }
+                  </p>
+                  {isQuickBooksConnected ? (
+                      <Button variant="destructive" onClick={handleDisconnectQuickBooks}>Déconnecter QuickBooks</Button>
+                  ) : (
+                    <Button variant="secondary" onClick={handleConnectQuickBooks} disabled={isConnecting}>
+                        {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {isConnecting ? "Connexion en cours..." : "Connecter QuickBooks"}
+                    </Button>
+                  )}
               </div>
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Rapports Avancés</h3>
