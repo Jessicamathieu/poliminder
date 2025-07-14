@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import ManageUsersDialog from "@/components/admin/manage-users-dialog";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -28,31 +30,56 @@ export default function AdminPage() {
     }
   }, [user, loading, router]);
   
-  // Simuler la récupération de l'état de connexion
+  // Écouter les changements de l'état de connexion QuickBooks en temps réel
   useEffect(() => {
-      const savedStatus = localStorage.getItem('quickbooks_connected');
-      if (savedStatus === 'true') {
-          setIsQuickBooksConnected(true);
-      }
-  }, []);
+    if (!user) return;
+    
+    const settingsDocRef = doc(db, "settings", "quickbooks");
+    const unsubscribe = onSnapshot(settingsDocRef, (doc) => {
+        if (doc.exists() && doc.data().connected) {
+            setIsQuickBooksConnected(true);
+        } else {
+            setIsQuickBooksConnected(false);
+        }
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const handleConnectQuickBooks = async () => {
     setIsConnecting(true);
-    // Simuler un appel API
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsQuickBooksConnected(true);
-    localStorage.setItem('quickbooks_connected', 'true');
-    setIsConnecting(false);
-    toast({
-        title: "QuickBooks connecté !",
-        description: "Votre compte est maintenant synchronisé.",
-        variant: "default",
-    });
+    // L'URL de votre fonction Firebase qui initie l'authentification
+    // Remplacez par votre URL de fonction réelle une fois déployée.
+    const authUrl = "YOUR_FIREBASE_FUNCTION_AUTH_URL_HERE"; 
+    
+    // Pour les besoins du développement, nous utilisons une URL placeholder
+    // et nous simulons. En production, cela ouvrirait la page de connexion QuickBooks.
+    if(authUrl.includes("YOUR_FIREBASE_FUNCTION_AUTH_URL_HERE")){
+        toast({
+            title: "Configuration requise",
+            description: "Veuillez déployer les fonctions Firebase et mettre à jour l'URL d'authentification.",
+            variant: "destructive"
+        });
+        
+        // Simulation pour le développement
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const settingsDocRef = doc(db, "settings", "quickbooks");
+        await setDoc(settingsDocRef, { connected: true, connectedAt: new Date() });
+
+        setIsConnecting(false);
+         toast({
+            title: "QuickBooks connecté (Simulation) !",
+            description: "Votre compte est maintenant synchronisé.",
+        });
+
+    } else {
+       window.location.href = authUrl;
+    }
   };
   
-  const handleDisconnectQuickBooks = () => {
-      setIsQuickBooksConnected(false);
-      localStorage.removeItem('quickbooks_connected');
+  const handleDisconnectQuickBooks = async () => {
+      const settingsDocRef = doc(db, "settings", "quickbooks");
+      await setDoc(settingsDocRef, { connected: false });
       toast({
           title: "QuickBooks déconnecté",
           description: "La synchronisation automatique est désactivée.",
