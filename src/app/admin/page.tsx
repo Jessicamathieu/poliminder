@@ -34,6 +34,8 @@ export default function AdminPage() {
   useEffect(() => {
     if (!user) return;
     
+    // This part will be reactivated when we store tokens in Firestore
+    /*
     const settingsDocRef = doc(db, "settings", "quickbooks");
     const unsubscribe = onSnapshot(settingsDocRef, (doc) => {
         if (doc.exists() && doc.data().connected) {
@@ -44,15 +46,18 @@ export default function AdminPage() {
     });
 
     return () => unsubscribe();
+    */
   }, [user]);
 
-  const handleConnectQuickBooks = async () => {
+  const handleConnectQuickBooks = () => {
     setIsConnecting(true);
-    // Redirige vers la route d'API qui gère l'authentification
+    // Redirige vers la route d'API Next.js qui gère l'authentification
     window.location.href = '/api/quickbooks/auth';
   };
   
   const handleDisconnectQuickBooks = async () => {
+      // This will be reactivated to clear tokens from Firestore
+      /*
       const settingsDocRef = doc(db, "settings", "quickbooks");
       try {
         await setDoc(settingsDocRef, { 
@@ -74,6 +79,12 @@ export default function AdminPage() {
         });
         console.error("Erreur de déconnexion:", error);
       }
+      */
+      setIsQuickBooksConnected(false);
+      toast({
+        title: "Simulation de déconnexion",
+        description: "La connexion à QuickBooks a été effacée de cette session.",
+      });
   };
 
   if (loading || !user || user.role !== 'admin') {
