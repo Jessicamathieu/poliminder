@@ -18,7 +18,7 @@ export default function QuickBooksConnectPage() {
         <CardContent>
           <Button asChild className="w-full" size="lg">
             <Link href="/api/quickbooks/auth">
-              Connecter à QuickBooks
+              Connecter QuickBooks
             </Link>
           </Button>
         </CardContent>

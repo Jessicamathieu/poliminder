@@ -1,16 +1,8 @@
-// /src/app/api/quickbooks/auth/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-const discoveryUrl = 'https://developer.api.intuit.com/.well-known/oauth2_configuration';
+const authorizationEndpoint = 'https://appcenter.intuit.com/connect/oauth2';
 
-async function getAuthUri(): Promise<string> {
-    const response = await fetch(discoveryUrl);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch QuickBooks OAuth2 discovery document: ${response.statusText}`);
-    }
-    const discoveryDoc = await response.json();
-    const authorizationEndpoint = discoveryDoc.authorization_endpoint;
-
+export async function GET(req: NextRequest) {
     const clientId = process.env.QUICKBOOKS_CLIENT_ID;
     const redirectUri = process.env.QUICKBOOKS_REDIRECT_URI;
     const scopes = 'com.intuit.quickbooks.accounting';
@@ -30,17 +22,8 @@ async function getAuthUri(): Promise<string> {
         state: state,
     });
 
-    return `${authorizationEndpoint}?${params.toString()}`;
-}
-
-export async function GET(req: NextRequest) {
-    try {
-        const authUri = await getAuthUri();
-        // Redirect the user to the QuickBooks authorization URL
-        return NextResponse.redirect(authUri);
-    } catch (error) {
-        console.error('Error getting QuickBooks auth URI:', error);
-        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
-        return NextResponse.json({ error: 'Failed to initiate QuickBooks authentication.', details: errorMessage }, { status: 500 });
-    }
+    const authUri = `${authorizationEndpoint}?${params.toString()}`;
+    
+    // Redirect the user to the QuickBooks authorization URL
+    return NextResponse.redirect(authUri);
 }

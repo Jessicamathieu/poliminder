@@ -1,17 +1,6 @@
-// /src/app/api/quickbooks/callback/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { temporaryTokenStore } from '@/lib/quickbooks-token-store';
 
-const discoveryUrl = 'https://developer.api.intuit.com/.well-known/oauth2_configuration';
-
-async function getTokenEndpoint(): Promise<string> {
-    const response = await fetch(discoveryUrl);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch QuickBooks OAuth2 discovery document: ${response.statusText}`);
-    }
-    const discoveryDoc = await response.json();
-    return discoveryDoc.token_endpoint;
-}
+const tokenEndpoint = 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer';
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -31,7 +20,6 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const tokenEndpoint = await getTokenEndpoint();
         const clientId = process.env.QUICKBOOKS_CLIENT_ID;
         const clientSecret = process.env.QUICKBOOKS_CLIENT_SECRET;
         const redirectUri = process.env.QUICKBOOKS_REDIRECT_URI;
@@ -69,18 +57,9 @@ export async function GET(req: NextRequest) {
             realmId: realmId,
         });
 
-        // Store tokens temporarily for this session
-        temporaryTokenStore.setTokens({
-            accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token,
-            realmId: realmId,
-            expiresAt: Date.now() + (tokens.expires_in * 1000),
-            refreshTokenExpiresAt: Date.now() + (tokens.x_refresh_token_expires_in * 1000),
-        });
-
-        // For now, return the raw JSON as requested
+        // Return the raw JSON as requested
         return NextResponse.json({
-            message: "Successfully connected to QuickBooks! You can now fetch data.",
+            message: "Successfully authenticated with QuickBooks!",
             realmId: realmId,
             ...tokens,
         });
