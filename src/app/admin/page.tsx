@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import ManageUsersDialog from "@/components/admin/manage-users-dialog";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -34,13 +35,6 @@ export default function AdminPage() {
           setIsQuickBooksConnected(true);
       }
   }, []);
-
-  const handleNotImplemented = () => {
-    toast({
-      title: "Fonctionnalité à venir",
-      description: "Cette fonctionnalité est en cours de développement.",
-    });
-  };
 
   const handleConnectQuickBooks = async () => {
     setIsConnecting(true);
@@ -107,7 +101,7 @@ export default function AdminPage() {
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Gestion des Utilisateurs</h3>
                   <p className="text-muted-foreground mb-4">Ajoutez, modifiez ou supprimez des utilisateurs.</p>
-                  <Button onClick={handleNotImplemented}>Gérer les Utilisateurs</Button>
+                  <ManageUsersDialog />
               </div>
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
@@ -129,7 +123,7 @@ export default function AdminPage() {
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Rapports Avancés</h3>
                   <p className="text-muted-foreground mb-4">Générez des rapports financiers et opérationnels détaillés.</p>
-                  <Button onClick={handleNotImplemented}>Voir les Rapports</Button>
+                  <Button onClick={() => router.push('/admin/reports')}>Voir les Rapports</Button>
               </div>
             </CardContent>
           </Card>
