@@ -1,32 +1,25 @@
+
 // /src/app/api/quickbooks/clients/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { temporaryTokenStore } from '@/lib/quickbooks-token-store';
+import { getValidQuickBooksToken } from '@/lib/firestore/quickbooks-actions';
 
 const qboApiBaseUrl = 'https://sandbox-quickbooks.api.intuit.com/v3/company';
 
 export async function GET(req: NextRequest) {
-    const tokens = temporaryTokenStore.getTokens();
-
-    if (!tokens || !tokens.accessToken || !tokens.realmId) {
-        return NextResponse.json(
-            { error: 'Not authenticated with QuickBooks. Please connect first.' },
-            { status: 401 }
-        );
-    }
-    
-    // Check if the token is expired (we'll implement refresh logic later)
-    if (Date.now() > tokens.expiresAt) {
-         return NextResponse.json(
-            { error: 'Access token expired. Please reconnect.' },
-            { status: 401 }
-        );
-    }
-
-    const { realmId, accessToken } = tokens;
-    const query = "SELECT * FROM Customer";
-    const url = `${qboApiBaseUrl}/${realmId}/query?query=${encodeURIComponent(query)}`;
-
     try {
+        const tokenData = await getValidQuickBooksToken();
+
+        if (!tokenData || !tokenData.accessToken || !tokenData.realmId) {
+            return NextResponse.json(
+                { error: 'Not authenticated with QuickBooks. Please connect first.' },
+                { status: 401 }
+            );
+        }
+        
+        const { realmId, accessToken } = tokenData;
+        const query = "SELECT * FROM Customer";
+        const url = `${qboApiBaseUrl}/${realmId}/query?query=${encodeURIComponent(query)}`;
+
         const response = await fetch(url, {
             method: 'GET',
             headers: {

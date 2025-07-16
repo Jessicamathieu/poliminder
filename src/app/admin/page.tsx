@@ -10,9 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import ManageUsersDialog from "@/components/admin/manage-users-dialog";
-import { db } from "@/lib/firebase";
-import { doc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { temporaryTokenStore } from "@/lib/quickbooks-token-store";
+import { checkQuickBooksConnection, disconnectQuickBooks } from "@/lib/firestore/quickbooks-actions";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -21,6 +19,7 @@ export default function AdminPage() {
   const { toast } = useToast();
   const [isQuickBooksConnected, setIsQuickBooksConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isCheckingConnection, setIsCheckingConnection] = useState(true);
 
   useEffect(() => {
     if (!loading) {
@@ -32,25 +31,29 @@ export default function AdminPage() {
     }
   }, [user, loading, router]);
   
-  // Écouter les changements de l'état de connexion QuickBooks en temps réel
+  // Check QuickBooks connection status on page load
   useEffect(() => {
-    // Check our temporary store on component mount
-    const tokens = temporaryTokenStore.getTokens();
-    if (tokens && tokens.accessToken) {
-        setIsQuickBooksConnected(true);
+    if (user?.role === 'admin') {
+      setIsCheckingConnection(true);
+      checkQuickBooksConnection()
+        .then(connected => {
+          setIsQuickBooksConnected(connected);
+          setIsCheckingConnection(false);
+        });
     }
-    
-    // Display a success toast if redirected from callback
+  }, [user]);
+  
+  useEffect(() => {
     if (searchParams.get('quickbooks') === 'success') {
         toast({
             title: "QuickBooks connecté !",
-            description: "Votre compte a été lié avec succès pour cette session.",
+            description: "Votre compte a été lié avec succès.",
         });
+        setIsQuickBooksConnected(true);
         // Clean up URL
         router.replace('/admin', { scroll: false });
     }
-
-  }, [user, toast, searchParams, router]);
+  }, [searchParams, toast, router]);
 
   const handleConnectQuickBooks = () => {
     setIsConnecting(true);
@@ -59,12 +62,21 @@ export default function AdminPage() {
   };
   
   const handleDisconnectQuickBooks = async () => {
-      temporaryTokenStore.clearTokens();
-      setIsQuickBooksConnected(false);
-      toast({
-        title: "QuickBooks déconnecté",
-        description: "La connexion à QuickBooks a été effacée de cette session.",
-      });
+      try {
+        await disconnectQuickBooks();
+        setIsQuickBooksConnected(false);
+        toast({
+          title: "QuickBooks déconnecté",
+          description: "La connexion à QuickBooks a bien été supprimée.",
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de déconnecter QuickBooks.",
+        });
+        console.error(error);
+      }
   };
 
   if (loading || !user || user.role !== 'admin') {
@@ -114,7 +126,8 @@ export default function AdminPage() {
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
                   <p className="text-muted-foreground mb-4">
-                    {isQuickBooksConnected 
+                    {isCheckingConnection ? "Vérification de la connexion..." :
+                      isQuickBooksConnected 
                         ? "Votre compte QuickBooks est connecté et prêt à synchroniser."
                         : "Connectez-vous à votre compte QuickBooks Canada pour automatiser la facturation."
                     }
@@ -122,9 +135,9 @@ export default function AdminPage() {
                   {isQuickBooksConnected ? (
                       <Button variant="destructive" onClick={handleDisconnectQuickBooks}>Déconnecter QuickBooks</Button>
                   ) : (
-                    <Button variant="secondary" onClick={handleConnectQuickBooks} disabled={isConnecting}>
-                        {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {isConnecting ? "Redirection vers QuickBooks..." : "Connecter QuickBooks"}
+                    <Button variant="secondary" onClick={handleConnectQuickBooks} disabled={isConnecting || isCheckingConnection}>
+                        {(isConnecting || isCheckingConnection) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {isConnecting ? "Redirection..." : "Connecter QuickBooks"}
                     </Button>
                   )}
               </div>

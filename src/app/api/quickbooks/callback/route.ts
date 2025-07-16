@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { temporaryTokenStore } from '@/lib/quickbooks-token-store';
+import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks-actions';
 
 const tokenEndpoint = 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer';
 
@@ -52,15 +52,15 @@ export async function GET(req: NextRequest) {
 
         const tokens = await response.json();
         
-        console.log('✅ QuickBooks Tokens Received, saving to temporary store:', tokens);
+        console.log('✅ QuickBooks Tokens Received, saving to Firestore:', tokens);
 
-        // Save tokens to our temporary in-memory store
-        temporaryTokenStore.setTokens({
-            accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token,
+        // Save tokens to Firestore
+        await saveQuickBooksTokens({
             realmId: realmId,
-            expiresAt: Date.now() + tokens.expires_in * 1000,
-            refreshTokenExpiresAt: Date.now() + tokens.x_refresh_token_expires_in * 1000,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expires_in: tokens.expires_in,
+            x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
         });
 
         const siteUrl = new URL(req.url).origin;
