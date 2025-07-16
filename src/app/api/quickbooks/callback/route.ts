@@ -1,6 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks-actions';
+
+// Note: We are temporarily removing the Firestore save logic
+// to unblock development due to issues generating a service account key.
+// We will simply return the tokens as JSON.
+// import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks-actions';
 
 const tokenEndpoint = 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer';
 
@@ -52,20 +56,14 @@ export async function GET(req: NextRequest) {
 
         const tokens = await response.json();
         
-        console.log('QuickBooks Tokens Received, saving to Firestore...');
+        console.log('✅ QuickBooks Tokens Received:', tokens);
 
-        // Save tokens to Firestore
-        await saveQuickBooksTokens({
+        // Instead of saving to Firestore, we return them directly.
+        return NextResponse.json({
+            message: "Tokens received successfully! (Not saved to DB)",
             realmId: realmId,
-            access_token: tokens.access_token,
-            refresh_token: tokens.refresh_token,
-            expires_in: tokens.expires_in,
-            x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
+            tokens: tokens
         });
-
-        // Redirect to a success page or dashboard
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
-        return NextResponse.redirect(`${siteUrl}/admin?quickbooks=success`);
 
 
     } catch (error) {
