@@ -1,36 +1,42 @@
-// lib/firestore/quickbooks.ts
 
-import { getFirestore } from 'firebase-admin/firestore'
-import { initializeApp, applicationDefault, cert } from 'firebase-admin/app'
+'use server';
 
-let appInitialized = false
+import { db } from '@/lib/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
-if (!appInitialized) {
-  initializeApp({
-    credential: applicationDefault(), // or use cert() if you have a service account
-  })
-  appInitialized = true
+interface QuickBooksTokenData {
+  realmId: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  x_refresh_token_expires_in: number;
 }
 
-const db = getFirestore()
+export async function saveQuickBooksTokens(data: QuickBooksTokenData) {
+  if (!data.realmId) {
+    throw new Error('Realm ID is required to save QuickBooks tokens.');
+  }
 
-export async function saveQuickBooksTokens(data: {
-  realmId: string | null
-  access_token: string
-  refresh_token: string
-  expires_in: number
-  x_refresh_token_expires_in: number
-}) {
-  if (!data.realmId) throw new Error('Missing realmId')
+  const docRef = db.collection('quickbooks_credentials').doc(data.realmId);
+  
+  await docRef.set({
+    ...data,
+    // Store expiry dates as timestamps for easier querying
+    access_token_expires_at: FieldValue.serverTimestamp(), // This will be updated later
+    refresh_token_expires_at: FieldValue.serverTimestamp(), // This will be updated later
+    updatedAt: FieldValue.serverTimestamp(),
+    connected: true
+  }, { merge: true });
 
-  const docRef = db.collection('quickbooks_tokens').doc(data.realmId)
-  await docRef.set(
-    {
-      ...data,
-      timestamp: new Date(),
-    },
-    { merge: true }
-  )
+  // We set placeholder timestamps first, then update them with calculated dates
+  const now = new Date();
+  const accessTokenExpiresAt = new Date(now.getTime() + data.expires_in * 1000);
+  const refreshTokenExpiresAt = new Date(now.getTime() + data.x_refresh_token_expires_in * 1000);
 
-  console.log(`✅ Tokens saved for realmId: ${data.realmId}`)
+  await docRef.update({
+    access_token_expires_at: accessTokenExpiresAt,
+    refresh_token_expires_at: refreshTokenExpiresAt,
+  });
+
+  console.log(`✅ Successfully saved QuickBooks tokens for realmId: ${data.realmId}`);
 }
