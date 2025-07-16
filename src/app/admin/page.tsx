@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AppLayout from "@/components/layout/app-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,10 +12,12 @@ import { Loader2 } from "lucide-react";
 import ManageUsersDialog from "@/components/admin/manage-users-dialog";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { temporaryTokenStore } from "@/lib/quickbooks-token-store";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isQuickBooksConnected, setIsQuickBooksConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -32,22 +34,23 @@ export default function AdminPage() {
   
   // Écouter les changements de l'état de connexion QuickBooks en temps réel
   useEffect(() => {
-    if (!user) return;
+    // Check our temporary store on component mount
+    const tokens = temporaryTokenStore.getTokens();
+    if (tokens && tokens.accessToken) {
+        setIsQuickBooksConnected(true);
+    }
     
-    // This part will be reactivated when we store tokens in Firestore
-    /*
-    const settingsDocRef = doc(db, "settings", "quickbooks");
-    const unsubscribe = onSnapshot(settingsDocRef, (doc) => {
-        if (doc.exists() && doc.data().connected) {
-            setIsQuickBooksConnected(true);
-        } else {
-            setIsQuickBooksConnected(false);
-        }
-    });
+    // Display a success toast if redirected from callback
+    if (searchParams.get('quickbooks') === 'success') {
+        toast({
+            title: "QuickBooks connecté !",
+            description: "Votre compte a été lié avec succès pour cette session.",
+        });
+        // Clean up URL
+        router.replace('/admin', { scroll: false });
+    }
 
-    return () => unsubscribe();
-    */
-  }, [user]);
+  }, [user, toast, searchParams, router]);
 
   const handleConnectQuickBooks = () => {
     setIsConnecting(true);
@@ -56,33 +59,10 @@ export default function AdminPage() {
   };
   
   const handleDisconnectQuickBooks = async () => {
-      // This will be reactivated to clear tokens from Firestore
-      /*
-      const settingsDocRef = doc(db, "settings", "quickbooks");
-      try {
-        await setDoc(settingsDocRef, { 
-            connected: false,
-            accessToken: null,
-            refreshToken: null,
-            realmId: null,
-            disconnectedAt: serverTimestamp()
-        }, { merge: true });
-        toast({
-            title: "QuickBooks déconnecté",
-            description: "La synchronisation automatique est désactivée.",
-        });
-      } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "Impossible de se déconnecter de QuickBooks.",
-        });
-        console.error("Erreur de déconnexion:", error);
-      }
-      */
+      temporaryTokenStore.clearTokens();
       setIsQuickBooksConnected(false);
       toast({
-        title: "Simulation de déconnexion",
+        title: "QuickBooks déconnecté",
         description: "La connexion à QuickBooks a été effacée de cette session.",
       });
   };
