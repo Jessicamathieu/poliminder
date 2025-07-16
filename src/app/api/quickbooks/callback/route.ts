@@ -1,4 +1,6 @@
+
 import { NextRequest, NextResponse } from 'next/server';
+import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks-actions';
 
 const tokenEndpoint = 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer';
 
@@ -12,8 +14,6 @@ export async function GET(req: NextRequest) {
     if (error) {
         return NextResponse.json({ error: "QuickBooks login cancelled", description: error }, { status: 400 });
     }
-
-    // You should also validate the 'state' parameter here to prevent CSRF attacks
     
     if (!code || !realmId) {
         return NextResponse.json({ error: 'Authorization code or realmId is missing from the callback.' }, { status: 400 });
@@ -52,17 +52,21 @@ export async function GET(req: NextRequest) {
 
         const tokens = await response.json();
         
-        console.log('QuickBooks Tokens Received:', {
-            ...tokens,
+        console.log('QuickBooks Tokens Received, saving to Firestore...');
+
+        // Save tokens to Firestore
+        await saveQuickBooksTokens({
             realmId: realmId,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expires_in: tokens.expires_in,
+            x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
         });
 
-        // Return the raw JSON as requested
-        return NextResponse.json({
-            message: "Successfully authenticated with QuickBooks!",
-            realmId: realmId,
-            ...tokens,
-        });
+        // Redirect to a success page or dashboard
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
+        return NextResponse.redirect(`${siteUrl}/admin?quickbooks=success`);
+
 
     } catch (error) {
         console.error('Error in QuickBooks callback:', error);
