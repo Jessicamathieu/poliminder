@@ -1,5 +1,7 @@
 
 'use server';
+// This file is currently not used due to the temporary in-memory token storage solution.
+// It is kept for future reference when switching to a persistent Firestore token storage.
 
 import { db } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';

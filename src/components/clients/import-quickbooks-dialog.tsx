@@ -84,6 +84,8 @@ export default function ImportQuickBooksDialog({ onClientImported }: ImportQuick
         address: fullAddress || 'Non fournie',
         activeProjects: 0,
         createdAt: serverTimestamp(),
+        source: 'QuickBooks',
+        quickbooksId: customer.Id,
       };
       
       await addDoc(collection(db, "clients"), clientData);

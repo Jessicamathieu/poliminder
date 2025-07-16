@@ -12,6 +12,8 @@ export interface Client {
   address: string;
   activeProjects: number;
   createdAt?: any;
+  source?: 'QuickBooks' | 'Manual';
+  quickbooksId?: string;
 }
 
 export interface Service {
