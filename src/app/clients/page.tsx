@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -10,13 +11,16 @@ import type { Client } from "@/lib/types";
 import AddClientDialog from "@/components/clients/add-client-dialog";
 import ClientCard from "@/components/clients/client-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users } from "lucide-react";
+import { Users, BookUser } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ImportQuickBooksDialog from "@/components/clients/import-quickbooks-dialog";
 
 export default function ClientsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
 
   const fetchClients = useCallback(async () => {
     try {
@@ -89,7 +93,10 @@ export default function ClientsPage() {
                     <Users className="mr-4 h-8 w-8 text-primary" />
                     Vos Clients
                 </h1>
-                <AddClientDialog onClientAdded={handleAddClient} />
+                <div className="flex gap-2">
+                    <ImportQuickBooksDialog onClientImported={fetchClients} />
+                    <AddClientDialog onClientAdded={handleAddClient} />
+                </div>
             </div>
 
             {isLoading ? (
@@ -105,7 +112,7 @@ export default function ClientsPage() {
             ) : (
             <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
                 <h3 className="text-xl font-semibold font-headline text-primary">Aucun client pour le moment</h3>
-                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" pour commencer !</p>
+                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" ou importez depuis QuickBooks pour commencer !</p>
             </div>
             )}
         </div>
