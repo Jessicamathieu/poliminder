@@ -23,9 +23,10 @@ export async function GET(req: NextRequest) {
         const clientId = process.env.QUICKBOOKS_CLIENT_ID;
         const clientSecret = process.env.QUICKBOOKS_CLIENT_SECRET;
         const redirectUri = process.env.QUICKBOOKS_REDIRECT_URI;
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-        if (!clientId || !clientSecret || !redirectUri) {
-            throw new Error("QuickBooks environment variables are not fully configured.");
+        if (!clientId || !clientSecret || !redirectUri || !siteUrl) {
+            throw new Error("QuickBooks or Site URL environment variables are not fully configured.");
         }
 
         const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
@@ -52,7 +53,7 @@ export async function GET(req: NextRequest) {
 
         const tokens = await response.json();
         
-        console.log('✅ QuickBooks Tokens Received, saving to Firestore:', tokens);
+        console.log('✅ QuickBooks Tokens Received, saving to Firestore...');
 
         // Save tokens to Firestore
         await saveQuickBooksTokens({
@@ -62,8 +63,7 @@ export async function GET(req: NextRequest) {
             expires_in: tokens.expires_in,
             x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
         });
-
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
+        
         // Redirect back to the admin page with a success query param
         return NextResponse.redirect(`${siteUrl}/admin?quickbooks=success`);
 

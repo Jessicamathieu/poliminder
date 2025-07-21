@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
     const state = 'security_token_which_should_be_random'; 
 
     if (!clientId || !redirectUri) {
-        throw new Error("QUICKBOOKS_CLIENT_ID or QUICKBOOKS_REDIRECT_URI is not defined in .env file");
+        console.error("QuickBooks environment variables are not defined. Check QUICKBOOKS_CLIENT_ID and QUICKBOOKS_REDIRECT_URI.");
+        return NextResponse.json({ error: "QuickBooks app not configured." }, { status: 500 });
     }
 
     const params = new URLSearchParams({
