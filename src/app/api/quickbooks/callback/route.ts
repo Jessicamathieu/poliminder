@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
             x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
         });
 
-        const siteUrl = new URL(req.url).origin;
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
         // Redirect back to the admin page with a success query param
         return NextResponse.redirect(`${siteUrl}/admin?quickbooks=success`);
 
