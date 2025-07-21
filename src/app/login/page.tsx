@@ -1,30 +1,55 @@
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Shield } from "lucide-react";
-import { useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const { login, user } = useAuth();
+  const { loginWithEmail, user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("jessica@poliminder.app");
+  const [password, setPassword] = useState("password123");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if(user) {
-        router.push('/');
+    if (user) {
+      router.push('/');
     }
   }, [user, router]);
 
-  const handleLogin = (role: "admin" | "field") => {
-    if (role === "admin") {
-      login({ name: "Jessica", role: "admin" });
-    } else {
-      login({ name: "Mikael", role: "field" });
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await loginWithEmail(email, password);
+      router.push("/");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Une erreur inconnue est survenue.";
+      toast({
+        variant: "destructive",
+        title: "Échec de la connexion",
+        description: errorMessage,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    router.push("/");
   };
+  
+  if (authLoading || user) {
+     return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <p>Chargement...</p>
+      </div>
+    );
+  }
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-background overflow-hidden">
@@ -52,25 +77,37 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold font-headline text-primary">PoliMindeR</h1>
           <CardDescription className="pt-2">Votre assistant d'entreprise intelligent</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-            <p className="text-center text-sm text-muted-foreground">Sélectionnez un rôle pour vous connecter</p>
-          <Button
-            size="lg"
-            className="w-full text-lg py-6"
-            onClick={() => handleLogin("admin")}
-          >
-            <Shield className="mr-2 h-5 w-5" />
-            Se connecter en tant que Jessica (Admin)
-          </Button>
-          <Button
-            size="lg"
-            variant="secondary"
-            className="w-full text-lg py-6"
-            onClick={() => handleLogin("field")}
-          >
-            <User className="mr-2 h-5 w-5" />
-            Se connecter en tant que Mikael (Terrain)
-          </Button>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Courriel</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="jessica@poliminder.app"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <p className="text-xs text-center text-muted-foreground pt-2">
+                Utilisez jessica@poliminder.app (admin) ou mikael@poliminder.app (terrain). Le mot de passe est password123.
+            </p>
+            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Se connecter
+            </Button>
+          </form>
         </CardContent>
       </Card>
       <style jsx>{`
