@@ -12,21 +12,21 @@ export async function GET(req: NextRequest) {
     const error = searchParams.get('error');
 
     if (error) {
-        return NextResponse.json({ error: "QuickBooks login cancelled", description: error }, { status: 400 });
+        return NextResponse.json({ error: "Connexion à QuickBooks annulée", description: error }, { status: 400 });
     }
     
     if (!code || !realmId) {
-        return NextResponse.json({ error: 'Authorization code or realmId is missing from the callback.' }, { status: 400 });
+        return NextResponse.json({ error: "Le code d'autorisation ou l'ID de la société est manquant dans le callback." }, { status: 400 });
     }
 
     try {
         const clientId = process.env.QUICKBOOKS_CLIENT_ID;
         const clientSecret = process.env.QUICKBOOKS_CLIENT_SECRET;
-        const redirectUri = process.env.QUICKBOOKS_REDIRECT_URI;
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+        const redirectUri = `${siteUrl}/api/quickbooks/callback`;
 
-        if (!clientId || !clientSecret || !redirectUri || !siteUrl) {
-            throw new Error("QuickBooks or Site URL environment variables are not fully configured.");
+        if (!clientId || !clientSecret || !siteUrl) {
+            throw new Error("Les variables d'environnement pour QuickBooks ou l'URL du site ne sont pas entièrement configurées.");
         }
 
         const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
@@ -47,15 +47,15 @@ export async function GET(req: NextRequest) {
 
         if (!response.ok) {
             const errorBody = await response.json();
-            console.error('Error fetching token:', errorBody);
-            return NextResponse.json({ error: 'Failed to exchange authorization code for token.', details: errorBody }, { status: response.status });
+            console.error("Erreur lors de l'obtention du token:", errorBody);
+            return NextResponse.json({ error: "Échec de l'échange du code d'autorisation contre un token.", details: errorBody }, { status: response.status });
         }
 
         const tokens = await response.json();
         
-        console.log('✅ QuickBooks Tokens Received, saving to Firestore...');
+        console.log('✅ Tokens QuickBooks reçus, sauvegarde dans Firestore...');
 
-        // Save tokens to Firestore
+        // Sauvegarde des tokens dans Firestore
         await saveQuickBooksTokens({
             realmId: realmId,
             access_token: tokens.access_token,
@@ -64,12 +64,12 @@ export async function GET(req: NextRequest) {
             x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
         });
         
-        // Redirect back to the admin page with a success query param
+        // Redirection vers la page admin avec un paramètre de succès
         return NextResponse.redirect(`${siteUrl}/admin?quickbooks=success`);
 
     } catch (error) {
-        console.error('Error in QuickBooks callback:', error);
-        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+        console.error('Erreur dans le callback QuickBooks:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Une erreur inattendue est survenue.';
         return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
