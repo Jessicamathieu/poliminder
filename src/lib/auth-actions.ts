@@ -5,10 +5,9 @@ import {
     signInWithEmailAndPassword,
     signOut as firebaseSignOut
 } from "firebase/auth";
-import { auth as firebaseAuth, db as clientDb } from "@/lib/firebase"; // Client SDK
-import { auth, db } from "@/lib/firebase-admin"; // Admin SDK
+import { auth as firebaseAuth } from "@/lib/firebase"; // Client SDK for sign-in
+import { auth, db } from "@/lib/firebase-admin"; // Admin SDK for user creation/management
 import { User } from "./types";
-import { doc, getDoc } from "firebase/firestore";
 
 // This is a server-side only function that interacts with Firebase Admin SDK
 export async function getUserData(uid: string): Promise<User | null> {
@@ -60,41 +59,47 @@ export async function createInitialUsers() {
 
     for (const userData of users) {
         try {
-            // Check if user already exists
-            const existingUser = await auth.getUserByEmail(userData.email).catch(() => null);
-            if (existingUser) {
-                console.log(`User ${userData.email} already exists.`);
-                // Ensure Firestore doc also exists
-                 const userDocRef = db.collection('users').doc(existingUser.uid);
-                 const docSnap = await userDocRef.get();
-                 if(!docSnap.exists) {
-                    await userDocRef.set({
-                        name: userData.name,
+            // Check if user already exists in Auth
+            let userRecord;
+            try {
+                userRecord = await auth.getUserByEmail(userData.email);
+                console.log(`User ${userData.email} already exists in Auth.`);
+            } catch (error: any) {
+                if (error.code === 'auth/user-not-found') {
+                    // Create user in Firebase Auth if not found
+                    userRecord = await auth.createUser({
                         email: userData.email,
-                        role: userData.role,
+                        password: userData.password,
+                        displayName: userData.name,
                     });
-                     console.log(`Firestore document created for ${userData.email}`);
-                 }
-                continue;
+                    console.log('Successfully created new user in Auth:', userRecord.uid);
+                } else {
+                    throw error; // Rethrow other auth errors
+                }
             }
 
-            // Create user in Firebase Auth
-            const userRecord = await auth.createUser({
-                email: userData.email,
-                password: userData.password,
-                displayName: userData.name,
-            });
-            console.log('Successfully created new user in Auth:', userRecord.uid);
+            // Check if user document exists in Firestore and create/update it
+            const userDocRef = db.collection('users').doc(userRecord.uid);
+            const docSnap = await userDocRef.get();
+            if (!docSnap.exists) {
+                await userDocRef.set({
+                    name: userData.name,
+                    email: userData.email,
+                    role: userData.role,
+                });
+                console.log('Successfully created new user in Firestore:', userRecord.uid);
+            } else {
+                 console.log(`Firestore document for ${userData.email} already exists.`);
+            }
 
-            // Create user document in Firestore
-            await db.collection('users').doc(userRecord.uid).set({
-                name: userData.name,
-                email: userData.email,
-                role: userData.role,
-            });
-            console.log('Successfully created new user in Firestore:', userRecord.uid);
         } catch (error) {
-            console.error('Error creating user:', userData.email, error);
+            console.error('Error creating or checking user:', userData.email, error);
+            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            // Check for specific error that might indicate service account key issue
+            if(errorMessage.includes('Failed to determine project ID') || errorMessage.includes('Credential implementation')) {
+                throw new Error("Erreur de configuration Firebase Admin. Vérifiez votre clé de service (.env).");
+            }
+            throw new Error(`Failed to process user ${userData.email}.`);
         }
     }
 }

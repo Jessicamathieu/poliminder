@@ -12,14 +12,14 @@ if (!admin.apps.length) {
     admin.initializeApp({
       credential: serviceAccount 
         ? admin.credential.cert(serviceAccount)
-        : admin.credential.applicationDefault(), // Fallback for environments like Cloud Run
+        : undefined, // Explicitly undefined if no service account
     });
      console.log('Firebase Admin SDK initialized.');
   } catch (e: any) {
-    if (e.code !== 'auth/invalid-credential') {
-      console.error('Firebase Admin SDK initialization error:', e);
+    if (e.code === 'auth/invalid-credential' || e.message.includes('Must provide a "credential"')) {
+      console.warn('Firebase Admin SDK not initialized due to missing or invalid credentials. This is expected if the service account key is not set in .env. API routes or Server Actions requiring admin access will fail.');
     } else {
-      console.warn('Firebase Admin SDK not initialized due to missing credentials. This is expected in some local dev environments. API routes requiring admin access may fail.');
+      console.error('Firebase Admin SDK initialization error:', e);
     }
   }
 }
