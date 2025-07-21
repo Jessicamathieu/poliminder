@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { createInitialUsers } from "@/lib/auth-actions";
 
 export default function LoginPage() {
   const { loginWithEmail, user, loading: authLoading } = useAuth();
@@ -48,7 +47,13 @@ export default function LoginPage() {
   const handleInitializeUsers = async () => {
     setIsInitializing(true);
     try {
-        await createInitialUsers();
+        const response = await fetch('/api/create-initial-users', { method: 'POST' });
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Une erreur est survenue lors de l`initialisation.');
+        }
+
         toast({
             title: "Utilisateurs initialisés !",
             description: "Les comptes pour Jessica et Mikael ont été créés. Vous pouvez maintenant vous connecter.",
