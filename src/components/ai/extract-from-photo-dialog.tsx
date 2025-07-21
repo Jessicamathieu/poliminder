@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -15,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera, Loader2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-// import { extractAppointments } from "@/ai/flows/extract-appointments-flow";
+import { extractAppointments } from "@/ai/flows/extract-appointments-flow";
 
 export default function ExtractFromPhotoDialog() {
   const [open, setOpen] = useState(false);
@@ -40,43 +41,45 @@ export default function ExtractFromPhotoDialog() {
     }
 
     setIsProcessing(true);
-    
-    // Feature not implemented yet
     toast({
-      title: "Fonctionnalité en cours de développement",
-      description: "L'extraction par IA n'est pas encore disponible.",
+      title: "Analyse IA en cours...",
+      description: "L'IA lit votre agenda, veuillez patienter."
     });
-    console.log("Processing file:", selectedFile.name);
-    
-    // Simulating AI processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // const reader = new FileReader();
-    // reader.readAsDataURL(selectedFile);
-    // reader.onload = async () => {
-    //   try {
-    //     const dataUri = reader.result as string;
-    //     const result = await extractAppointments({ photoDataUri: dataUri });
-    //     console.log("AI Result:", result);
-    //     toast({
-    //       title: "Extraction réussie!",
-    //       description: `${result.appointments.length} rendez-vous ont été trouvés.`
-    //     });
-    //     setOpen(false);
-    //   } catch (error) {
-    //     console.error("Error extracting appointments:", error);
-    //     toast({
-    //       variant: "destructive",
-    //       title: "Erreur d'extraction",
-    //       description: "L'IA n'a pas pu traiter l'image. Veuillez réessayer."
-    //     });
-    //   } finally {
-    //     setIsProcessing(false);
-    //   }
-    // };
-    
-    setIsProcessing(false);
-    setOpen(false);
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onload = async () => {
+      try {
+        const dataUri = reader.result as string;
+        const currentYear = new Date().getFullYear();
+        const result = await extractAppointments({ photoDataUri: dataUri, currentYear });
+        
+        toast({
+          title: "✅ Extraction réussie !",
+          description: `${result.appointments.length} rendez-vous ont été trouvés et ajoutés à l'agenda.`
+        });
+        setOpen(false);
+        setSelectedFile(null);
+      } catch (error) {
+        console.error("Error extracting appointments:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur d'extraction",
+          description: "L'IA n'a pas pu traiter l'image. Veuillez réessayer."
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+     reader.onerror = (error) => {
+        console.error("File reading error:", error);
+        toast({
+            variant: "destructive",
+            title: "Erreur de lecture du fichier",
+            description: "Impossible de lire le fichier sélectionné.",
+        });
+        setIsProcessing(false);
+    };
   };
 
   return (

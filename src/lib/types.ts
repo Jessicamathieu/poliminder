@@ -12,7 +12,7 @@ export interface Client {
   address: string;
   activeProjects: number;
   createdAt?: any;
-  source?: 'QuickBooks' | 'Manual';
+  source?: 'QuickBooks' | 'Manual' | 'AI-Extraction';
   quickbooksId?: string;
 }
 
@@ -39,6 +39,7 @@ export interface Appointment {
   isCompleted?: boolean;
   notes?: string;
   createdAt?: any;
+  source?: 'AI-Extraction' | 'Manual';
 
   // Champs dépréciés, à nettoyer potentiellement plus tard
   client?: string; 
