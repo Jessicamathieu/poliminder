@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { createInitialUsers } from "@/lib/auth-actions";
 
 export default function LoginPage() {
   const { loginWithEmail, user, loading: authLoading } = useAuth();

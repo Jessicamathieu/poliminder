@@ -3,7 +3,6 @@
 
 import { 
     signInWithEmailAndPassword,
-    signOut as firebaseSignOut
 } from "firebase/auth";
 import { auth as firebaseAuth } from "@/lib/firebase"; // Client SDK for sign-in
 import { auth, db } from "@/lib/firebase-admin"; // Admin SDK for user creation/management
@@ -63,7 +62,6 @@ export async function createInitialUsers() {
             let userRecord;
             try {
                 userRecord = await auth.getUserByEmail(userData.email);
-                console.log(`User ${userData.email} already exists in Auth.`);
             } catch (error: any) {
                 if (error.code === 'auth/user-not-found') {
                     // Create user in Firebase Auth if not found
@@ -72,7 +70,6 @@ export async function createInitialUsers() {
                         password: userData.password,
                         displayName: userData.name,
                     });
-                    console.log('Successfully created new user in Auth:', userRecord.uid);
                 } else {
                     throw error; // Rethrow other auth errors
                 }
@@ -87,9 +84,6 @@ export async function createInitialUsers() {
                     email: userData.email,
                     role: userData.role,
                 });
-                console.log('Successfully created new user in Firestore:', userRecord.uid);
-            } else {
-                 console.log(`Firestore document for ${userData.email} already exists.`);
             }
 
         } catch (error) {

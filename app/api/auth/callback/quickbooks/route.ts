@@ -1,12 +1,12 @@
 // app/api/auth/callback/quickbooks/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks'
+import { saveQuickBooksTokens } from '@/lib/firestore/quickbooks-actions'
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url)
   const code = url.searchParams.get('code')
-  const realmId = url.searchParams.searchParams.get('realmId')
+  const realmId = url.searchParams.get('realmId')
 
   if (!code || !realmId) {
     return NextResponse.json({ error: 'Missing code or realmId' }, { status: 400 })
