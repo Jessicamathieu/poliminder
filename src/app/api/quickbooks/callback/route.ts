@@ -23,12 +23,12 @@ export async function GET(req: NextRequest) {
         const clientId = process.env.QUICKBOOKS_CLIENT_ID;
         const clientSecret = process.env.QUICKBOOKS_CLIENT_SECRET;
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-        const redirectUri = `${siteUrl}/api/quickbooks/callback`;
 
         if (!clientId || !clientSecret || !siteUrl) {
             throw new Error("Les variables d'environnement pour QuickBooks ou l'URL du site ne sont pas entièrement configurées.");
         }
 
+        const redirectUri = `${siteUrl}/api/quickbooks/callback`;
         const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
         const response = await fetch(tokenEndpoint, {
