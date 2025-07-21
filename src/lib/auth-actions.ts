@@ -53,7 +53,7 @@ export async function logout() {
 // This is not meant to be part of the app's regular flow.
 export async function createInitialUsers() {
     const users = [
-        { email: 'info@estheticaspa.com', password: 'Jessmik1985', name: 'Jessica', role: 'admin' },
+        { email: 'mathieuj787@gmail.com', password: 'Jessmik1985', name: 'Jessica', role: 'admin' },
         { email: 'mikael@poliminder.app', password: 'password123', name: 'Mikael', role: 'field' }
     ];
 
