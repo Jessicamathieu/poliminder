@@ -61,6 +61,7 @@ export interface Expense {
   vendor: string;
   amount: number;
   createdAt?: any;
+  source?: 'AI-Extraction' | 'Manual';
 }
 
 export interface ChartData {

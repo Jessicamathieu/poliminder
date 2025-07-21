@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wand2, UploadCloud, FileImage } from "lucide-react";
 import { cn } from '@/lib/utils';
+import { extractExpense } from '@/ai/flows/extract-expense-flow';
 
 export default function ExpenseFormAI() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -31,27 +32,38 @@ export default function ExpenseFormAI() {
     }
 
     setIsProcessing(true);
-    
-    // TODO: Connect to Genkit flow for expense extraction
-    // For now, we simulate the process and show a notification.
     toast({
       title: "Analyse en cours...",
-      description: "L'IA analyse votre reçu. Cette fonctionnalité est en cours de développement.",
-    });
-    console.log("Processing file for expense extraction:", selectedFile.name);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // On a real implementation, you would get data back from the AI
-    // and potentially pre-fill an expense form or save it directly.
-    toast({
-        title: "Extraction terminée !",
-        description: "Les informations du reçu ont été (simulées) extraites avec succès.",
+      description: "L'IA analyse votre reçu. Veuillez patienter.",
     });
 
-    setIsProcessing(false);
-    setSelectedFile(null);
+    try {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
+        reader.onloadend = async () => {
+            const dataUri = reader.result as string;
+            const result = await extractExpense({ photoDataUri: dataUri });
+            
+            toast({
+                title: "✅ Dépense ajoutée !",
+                description: `Dépense de ${result.amount}$ chez ${result.vendor} ajoutée.`,
+            });
+            setSelectedFile(null);
+            setIsProcessing(false);
+        };
+        reader.onerror = (error) => {
+            console.error("Error reading file:", error);
+            throw new Error("Impossible de lire le fichier.");
+        }
+    } catch (error) {
+        console.error("Error processing expense:", error);
+        toast({
+            variant: "destructive",
+            title: "Erreur d'analyse",
+            description: "L'IA n'a pas pu traiter l'image. Veuillez réessayer."
+        });
+        setIsProcessing(false);
+    }
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLLabelElement>) => {
