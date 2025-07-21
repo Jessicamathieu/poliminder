@@ -4,6 +4,10 @@ import { auth, db } from '@/lib/firebase-admin';
 
 // This API route replaces the previous Firebase Function.
 export async function POST() {
+    if (!db || !auth) {
+        console.warn('❌ Firebase Admin SDK is not available');
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+      }
     const users = [
         { email: 'mathieuj787@gmail.com', password: 'Jessmik1985', name: 'Jessica', role: 'admin' },
         { email: 'mikael@poliminder.app', password: 'password123', name: 'Mikael', role: 'field' }

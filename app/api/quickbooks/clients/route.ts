@@ -1,11 +1,14 @@
-
-// /src/app/api/quickbooks/clients/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getValidQuickBooksToken } from '@/lib/firestore/quickbooks-actions';
+import { db } from '@/lib/firebase-admin';
 
 const qboApiBaseUrl = 'https://sandbox-quickbooks.api.intuit.com/v3/company';
 
 export async function GET(req: NextRequest) {
+    if (!db) {
+        console.warn('❌ Firestore is not available (firebase-admin not initialized)');
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+      }
     try {
         const tokenData = await getValidQuickBooksToken();
 
