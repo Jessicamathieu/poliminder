@@ -16,8 +16,8 @@ export default function LoginPage() {
   const { loginWithEmail, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("jessica@poliminder.app");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("info@estheticaspa.com");
+  const [password, setPassword] = useState("Jessmik1985");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
 
@@ -106,7 +106,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="jessica@poliminder.app"
+                placeholder="info@estheticaspa.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -123,7 +123,7 @@ export default function LoginPage() {
               />
             </div>
             <p className="text-xs text-center text-muted-foreground pt-2">
-                Utilisez jessica@poliminder.app (admin) ou mikael@poliminder.app (terrain) avec le mot de passe 'password123'.
+                Utilisez info@estheticaspa.com (admin) ou mikael@poliminder.app (terrain).
             </p>
             <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
