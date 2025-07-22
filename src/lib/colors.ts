@@ -5,23 +5,17 @@ interface AccentColors {
 }
 
 const COLORS: { [key: string]: AccentColors } = {
-  dashboard:    { primary: '225 100% 55%', foreground: '240 10% 3.9%' }, // Bleu Fluo
-  clients:      { primary: '55 100% 50%',  foreground: '240 10% 3.9%' }, // Jaune Fluo
-  services:     { primary: '85 100% 48%',  foreground: '240 10% 3.9%' }, // Vert Lime Fluo
-  appointments: { primary: '35 100% 55%',  foreground: '240 10% 3.9%' }, // Orange Fluo
-  projects:     { primary: '330 100% 55%', foreground: '240 10% 3.9%' }, // Rose Fuchsia Fluo
-  expenses:     { primary: '275 100% 55%', foreground: '240 10% 3.9%' }, // Mauve Fluo
-  admin:        { primary: '0 100% 58%',   foreground: '240 10% 3.9%' }, // Rouge Fluo
+  dashboard:    { primary: '262 83% 58%', foreground: '0 0% 98%' }, 
+  clients:      { primary: '210 100% 55%', foreground: '0 0% 98%' }, 
+  services:     { primary: '160 100% 40%', foreground: '0 0% 98%' }, 
+  appointments: { primary: '30 100% 55%', foreground: '0 0% 98%' }, 
+  projects:     { primary: '330 100% 55%', foreground: '0 0% 98%' }, 
+  expenses:     { primary: '290 100% 55%', foreground: '0 0% 98%' },
+  admin:        { primary: '0 100% 58%',   foreground: '0 0% 98%' }, 
+  default:      { primary: '262 83% 58%', foreground: '0 0% 98%' }
 };
 
 export function getPageAccentColors(pathname: string): AccentColors {
-  if (pathname.startsWith('/clients')) return COLORS.clients;
-  if (pathname.startsWith('/services')) return COLORS.services;
-  if (pathname.startsWith('/appointments')) return COLORS.appointments;
-  if (pathname.startsWith('/projects')) return COLORS.projects;
-  if (pathname.startsWith('/expenses')) return COLORS.expenses;
-  if (pathname.startsWith('/admin')) return COLORS.admin;
-  
-  // Default color for dashboard ('/')
-  return COLORS.dashboard;
+  const page = pathname.split('/')[1] || 'dashboard';
+  return COLORS[page] || COLORS.default;
 }
