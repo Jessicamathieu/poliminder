@@ -1,35 +1,33 @@
-import { getApps, initializeApp, cert } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
-import { getAuth } from 'firebase-admin/auth'
+import { getApps, initializeApp, cert, App } from 'firebase-admin/app';
+import { getAuth, Auth } from 'firebase-admin/auth';
+import { getFirestore, Firestore } from 'firebase-admin/firestore';
 
-const firebaseAdminConfig = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-  : null
+let app: App;
+let auth: Auth;
+let db: Firestore;
 
-if (firebaseAdminConfig && getApps().length === 0) {
-  initializeApp({
-    credential: cert(firebaseAdminConfig),
-  })
-}
+if (getApps().length === 0) {
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    : undefined;
 
-// ✅ Ne PAS exporter `const db = getFirestore();` ici directement.
-export const getDb = () => {
-  if (getApps().length === 0) {
-    // In a production environment, this might indicate a configuration error
-    // but for the build process, it's expected if the service account isn't available.
-    // We can return null or throw a specific error that build can handle if necessary.
-    // For now, let's return null and handle it in the consuming code.
-    console.warn("⚠️ Firebase Admin app not initialized when getDb was called.");
-    return null; // Or throw an error if you prefer stricter behavior
+  if (!serviceAccount) {
+    console.warn(
+      'Firebase Admin SDK not initialized. FIREBASE_SERVICE_ACCOUNT_KEY is missing.'
+    );
+  } else {
+     app = initializeApp({
+      credential: cert(serviceAccount),
+    });
   }
-  return getFirestore()
+} else {
+  app = getApps()[0];
 }
 
-// Also update getAuth if it's used in a similar way
-export const getAuthInstance = () => {
-    if (getApps().length === 0) {
-        console.warn("⚠️ Firebase Admin app not initialized when getAuthInstance was called.");
-        return null; // Or throw
-    }
-    return getAuth();
+if (app) {
+  auth = getAuth(app);
+  db = getFirestore(app);
 }
+
+// Export initialized instances, which might be undefined if initialization failed.
+export { app, db, auth };
