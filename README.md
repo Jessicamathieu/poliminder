@@ -1,3 +1,4 @@
+
 # PoliMindeR - Votre Assistant d'Entreprise Intelligent
 
 Bienvenue dans le projet PoliMindeR ! Cette application est conçue pour aider Jessica et Mikael à gérer leur entreprise de manière efficace et intelligente.

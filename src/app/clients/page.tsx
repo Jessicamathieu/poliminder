@@ -94,7 +94,7 @@ export default function ClientsPage() {
                     Vos Clients
                 </h1>
                 <div className="flex gap-2">
-                    <ImportQuickBooksDialog onClientImported={fetchClients} />
+                    {/* <ImportQuickBooksDialog onClientImported={fetchClients} /> */}
                     <AddClientDialog onClientAdded={handleAddClient} />
                 </div>
             </div>
@@ -112,7 +112,7 @@ export default function ClientsPage() {
             ) : (
             <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
                 <h3 className="text-xl font-semibold font-headline text-primary">Aucun client pour le moment</h3>
-                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" ou importez depuis QuickBooks pour commencer !</p>
+                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" pour commencer !</p>
             </div>
             )}
         </div>

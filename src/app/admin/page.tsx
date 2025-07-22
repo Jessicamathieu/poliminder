@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import ManageUsersDialog from "@/components/admin/manage-users-dialog";
-import { checkQuickBooksConnection, disconnectQuickBooks } from "@/lib/firestore/quickbooks-actions";
+// import { checkQuickBooksConnection, disconnectQuickBooks } from "@/lib/firestore/quickbooks-actions";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -33,14 +33,15 @@ export default function AdminPage() {
   
   // Check QuickBooks connection status on page load
   useEffect(() => {
-    if (user?.role === 'admin') {
-      setIsCheckingConnection(true);
-      checkQuickBooksConnection()
-        .then(connected => {
-          setIsQuickBooksConnected(connected);
-          setIsCheckingConnection(false);
-        });
-    }
+    // Simulating no connection for now
+    setIsCheckingConnection(true);
+    // checkQuickBooksConnection()
+    //   .then(connected => {
+    //     setIsQuickBooksConnected(connected);
+    //     setIsCheckingConnection(false);
+    //   });
+    setIsQuickBooksConnected(false);
+    setIsCheckingConnection(false);
   }, [user]);
   
   useEffect(() => {
@@ -57,13 +58,18 @@ export default function AdminPage() {
 
   const handleConnectQuickBooks = () => {
     setIsConnecting(true);
+    toast({
+        title: "Fonctionnalité désactivée",
+        description: "La connexion à QuickBooks est temporairement désactivée.",
+    });
+    setIsConnecting(false);
     // Redirige vers la route d'API Next.js qui gère l'authentification
-    window.location.href = '/api/quickbooks/auth';
+    // window.location.href = '/api/quickbooks/auth';
   };
   
   const handleDisconnectQuickBooks = async () => {
       try {
-        await disconnectQuickBooks();
+        // await disconnectQuickBooks();
         setIsQuickBooksConnected(false);
         toast({
           title: "QuickBooks déconnecté",
@@ -123,7 +129,7 @@ export default function AdminPage() {
                   <p className="text-muted-foreground mb-4">Ajoutez, modifiez ou supprimez des utilisateurs.</p>
                   <ManageUsersDialog />
               </div>
-              <div className="p-6 border rounded-lg">
+              {/* <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Intégration QuickBooks</h3>
                   <p className="text-muted-foreground mb-4">
                     {isCheckingConnection ? "Vérification de la connexion..." :
@@ -140,7 +146,7 @@ export default function AdminPage() {
                         {isConnecting ? "Redirection..." : "Connecter QuickBooks"}
                     </Button>
                   )}
-              </div>
+              </div> */}
               <div className="p-6 border rounded-lg">
                   <h3 className="font-headline text-lg mb-2 text-primary">Rapports Avancés</h3>
                   <p className="text-muted-foreground mb-4">Générez des rapports financiers et opérationnels détaillés.</p>

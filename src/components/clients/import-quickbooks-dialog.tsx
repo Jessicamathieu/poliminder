@@ -41,7 +41,8 @@ export default function ImportQuickBooksDialog({ onClientImported }: ImportQuick
 
   useEffect(() => {
     if (open) {
-      fetchQuickBooksCustomers();
+      // fetchQuickBooksCustomers();
+      setError("La connexion à QuickBooks est temporairement désactivée.");
     }
   }, [open]);
 
@@ -120,7 +121,7 @@ export default function ImportQuickBooksDialog({ onClientImported }: ImportQuick
         <DialogHeader>
           <DialogTitle>Importer des Clients depuis QuickBooks</DialogTitle>
           <DialogDescription>
-            Voici la liste de vos clients QuickBooks. Cliquez sur "Importer" pour les ajouter à PoliMindeR.
+            La connexion à QuickBooks est temporairement désactivée pour maintenance.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-96 pr-6">
@@ -141,7 +142,7 @@ export default function ImportQuickBooksDialog({ onClientImported }: ImportQuick
             {error && (
               <div className="flex flex-col items-center justify-center text-center p-8 bg-destructive/10 rounded-lg">
                 <AlertCircle className="h-10 w-10 text-destructive mb-4" />
-                <p className="font-semibold text-destructive">Erreur de chargement</p>
+                <p className="font-semibold text-destructive">Fonctionnalité désactivée</p>
                 <p className="text-sm text-destructive/80">{error}</p>
               </div>
             )}

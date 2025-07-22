@@ -1,11 +1,15 @@
 
 // /src/app/api/quickbooks/clients/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getValidQuickBooksToken } from '@/lib/firestore/quickbooks-actions';
+// import { getValidQuickBooksToken } from '@/lib/firestore/quickbooks-actions';
 
-const qboApiBaseUrl = 'https://sandbox-quickbooks.api.intuit.com/v3/company';
+// const qboApiBaseUrl = 'https://sandbox-quickbooks.api.intuit.com/v3/company';
 
 export async function GET(req: NextRequest) {
+    // Temporarily disabled to prevent deployment errors.
+    return NextResponse.json([]);
+
+    /*
     try {
         const tokenData = await getValidQuickBooksToken();
 
@@ -47,4 +51,5 @@ export async function GET(req: NextRequest) {
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
         return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
+    */
 }
