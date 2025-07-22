@@ -1,11 +1,6 @@
 const nextConfig = {
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  reactStrictMode: true,
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -16,6 +11,13 @@ const nextConfig = {
       },
     ],
   },
+  // Les options typescript et eslint sans ignorer les erreurs
+  // typescript: {
+  //   // configurez vos options TypeScript ici si nécessaire, mais pas d'ignoreBuildErrors: true
+  // },
+  // eslint: {
+  //   // configurez vos options ESLint ici si nécessaire, mais pas d'ignoreDuringBuilds: true
+  // },
 };
 
 export default nextConfig;
