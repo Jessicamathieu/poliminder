@@ -5,9 +5,13 @@ import { auth, db } from '@/lib/firebase-admin';
 // This API route replaces the previous Firebase Function.
 export async function POST() {
     if (!db || !auth) {
-        console.warn('❌ Firebase Admin SDK is not available');
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.warn('❌ Firebase Admin SDK is not available. Cannot create initial users.');
+        return NextResponse.json(
+            { error: 'Firebase Admin not configured. Check server logs for details.' }, 
+            { status: 500 }
+        );
       }
+
     const users = [
         { email: 'mathieuj787@gmail.com', password: 'Jessmik1985', name: 'Jessica', role: 'admin' },
         { email: 'mikael@poliminder.app', password: 'password123', name: 'Mikael', role: 'field' }
@@ -46,9 +50,6 @@ export async function POST() {
         console.error('Error creating or checking users:', error);
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
         
-        if(errorMessage.includes('Failed to determine project ID') || errorMessage.includes('Credential implementation')) {
-            return NextResponse.json({ message: "Erreur de configuration Firebase Admin. Vérifiez votre clé de service (.env)." }, { status: 500 });
-        }
         return NextResponse.json({ message: `Failed to process users. ${errorMessage}` }, { status: 500 });
     }
 }

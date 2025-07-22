@@ -23,19 +23,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const handleAuthStateChanged = useCallback(async (fbUser: FirebaseAuthUser | null) => {
+    setLoading(true);
     setFirebaseUser(fbUser);
     if (fbUser) {
         try {
             const userData = await getUserData(fbUser.uid);
-            if(userData) {
-                setUser(userData);
-            } else {
-                // This case handles user creation race condition or missing DB record
-                setUser(null);
-            }
+            setUser(userData); // userData peut être null si la db est indisponible
         } catch (error) {
-            console.error("Error fetching user data:", error);
-            setUser(null);
+            console.error("Error fetching user data on auth state change:", error);
+            setUser(null); // Force la déconnexion de l'état local en cas d'erreur db
+            await firebaseSignOut(firebaseAuth);
         }
     } else {
       setUser(null);
@@ -50,14 +47,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginWithEmail = async (email: string, pass: string) => {
     const userCredential = await loginWithEmailAndPassword(email, pass);
-    await handleAuthStateChanged(userCredential.user);
+    // onAuthStateChanged va gérer la mise à jour de l'état
   };
 
   const logout = async () => {
-    await serverLogout(); // Clear server session / cookie
-    await firebaseSignOut(firebaseAuth); // Sign out from client
-    setUser(null);
-    setFirebaseUser(null);
+    await firebaseSignOut(firebaseAuth); // Déclenche onAuthStateChanged qui mettra user à null
   };
 
   return (

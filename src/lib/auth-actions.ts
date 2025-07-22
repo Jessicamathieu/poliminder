@@ -5,11 +5,17 @@ import {
     signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth as firebaseAuth } from "@/lib/firebase"; // Client SDK for sign-in
-import { auth, db } from "@/lib/firebase-admin"; // Admin SDK for user creation/management
+import { auth, db } from "@/lib/firebase-admin"; // Admin SDK for user data
 import { User } from "./types";
 
 // This is a server-side only function that interacts with Firebase Admin SDK
 export async function getUserData(uid: string): Promise<User | null> {
+    // Vérifie si le SDK admin est disponible
+    if (!db) {
+        console.warn("Firestore Admin SDK not available. Cannot fetch user data.");
+        // Retourne null pour que l'app ne plante pas, l'utilisateur devra se reconnecter.
+        return null; 
+    }
     try {
         const userDocRef = db.collection('users').doc(uid);
         const docSnap = await userDocRef.get();
@@ -26,8 +32,8 @@ export async function getUserData(uid: string): Promise<User | null> {
     }
 }
 
-// Note: This function uses the client SDK for authentication.
-// It is designed to be called from a client component but will execute on the server.
+// Utilise le SDK client pour l'authentification.
+// Appelée depuis un composant client mais s'exécute sur le serveur via une Server Action.
 export async function loginWithEmailAndPassword(email: string, pass: string) {
     try {
         const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, pass);
@@ -42,59 +48,6 @@ export async function loginWithEmailAndPassword(email: string, pass: string) {
 }
 
 export async function logout() {
-  // In a real app with server-side sessions, you would clear the session cookie here.
-  // For this setup, we mainly rely on client-side sign-out.
-  // This function is kept for structural consistency.
+  // Pour une app "serverless", on se fie surtout à la déconnexion client.
   return Promise.resolve();
 }
-
-// Function to run once to create users in Firebase Authentication and Firestore
-// This is not meant to be part of the app's regular flow.
-export async function createInitialUsers() {
-    const users = [
-        { email: 'mathieuj787@gmail.com', password: 'Jessmik1985', name: 'Jessica', role: 'admin' },
-        { email: 'mikael@poliminder.app', password: 'password123', name: 'Mikael', role: 'field' }
-    ];
-
-    for (const userData of users) {
-        try {
-            // Check if user already exists in Auth
-            let userRecord;
-            try {
-                userRecord = await auth.getUserByEmail(userData.email);
-            } catch (error: any) {
-                if (error.code === 'auth/user-not-found') {
-                    // Create user in Firebase Auth if not found
-                    userRecord = await auth.createUser({
-                        email: userData.email,
-                        password: userData.password,
-                        displayName: userData.name,
-                    });
-                } else {
-                    throw error; // Rethrow other auth errors
-                }
-            }
-
-            // Check if user document exists in Firestore and create/update it
-            const userDocRef = db.collection('users').doc(userRecord.uid);
-            const docSnap = await userDocRef.get();
-            if (!docSnap.exists) {
-                await userDocRef.set({
-                    name: userData.name,
-                    email: userData.email,
-                    role: userData.role,
-                });
-            }
-
-        } catch (error) {
-            console.error('Error creating or checking user:', userData.email, error);
-            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-            // Check for specific error that might indicate service account key issue
-            if(errorMessage.includes('Failed to determine project ID') || errorMessage.includes('Credential implementation')) {
-                throw new Error("Erreur de configuration Firebase Admin. Vérifiez votre clé de service (.env).");
-            }
-            throw new Error(`Failed to process user ${userData.email}.`);
-        }
-    }
-}
-
