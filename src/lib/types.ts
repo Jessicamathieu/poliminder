@@ -42,11 +42,6 @@ export interface Appointment {
   notes?: string;
   createdAt?: any;
   source?: 'AI-Extraction' | 'Manual';
-
-  // Champs dépréciés, à nettoyer potentiellement plus tard
-  client?: string; 
-  service?: string;
-  assignedTo?: "Jessica" | "Mikael";
 }
 
 export interface Project {

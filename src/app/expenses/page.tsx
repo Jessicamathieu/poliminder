@@ -15,6 +15,7 @@ import { Expense } from "@/lib/types";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
+import PageHeader from "@/components/layout/page-header";
 
 export default function ExpensesPage() {
   const { user, loading } = useAuth();
@@ -67,86 +68,70 @@ export default function ExpensesPage() {
 
   return (
     <AppLayout>
-      <>
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-96"
-          style={{
-              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
-              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
-          }}
-        />
-        <div
-            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
-            style={{
-                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
-                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
-            }}
-        />
-        <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
-          <div className="flex items-center justify-between">
-            <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight font-headline">
-              <Wallet className="h-8 w-8 text-primary" />
-              Dépenses
-            </h1>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-2">
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="font-headline text-primary">Ajouter une dépense avec l'IA</CardTitle>
-                      <CardDescription>Prenez une photo de votre reçu ou importez une image pour que l'IA en extraie les informations.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <ExpenseFormAI />
-                  </CardContent>
-              </Card>
-              <Card>
-              <CardHeader>
-                  <CardTitle className="font-headline text-primary">Dépenses Récentes</CardTitle>
-                  <CardDescription>Voici la liste de vos dernières dépenses enregistrées.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                  <Table>
-                  <TableHeader>
-                      <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Catégorie</TableHead>
-                      <TableHead>Vendeur</TableHead>
-                      <TableHead className="text-right">Montant</TableHead>
-                      </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                      {isLoading ? (
-                        [...Array(3)].map((_, i) => (
-                           <TableRow key={i}>
-                                <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                                <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                                <TableCell><Skeleton className="h-5 w-28" /></TableCell>
-                                <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
-                           </TableRow>
-                        ))
-                      ) : expenses.length > 0 ? (
-                        expenses.map((expense) => (
-                          <TableRow key={expense.id}>
-                              <TableCell>{format(expense.date, "PPP", { locale: fr })}</TableCell>
-                              <TableCell>{expense.category}</TableCell>
-                              <TableCell className="font-medium">{expense.vendor}</TableCell>
-                              <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                            <TableCell colSpan={4} className="h-24 text-center">
-                                Aucune dépense enregistrée pour le moment.
-                            </TableCell>
+      <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <PageHeader title={
+          <>
+            <Wallet className="h-8 w-8 text-primary" />
+            Dépenses
+          </>
+        } />
+        <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline text-primary">Ajouter une dépense avec l'IA</CardTitle>
+                    <CardDescription>Prenez une photo de votre reçu ou importez une image pour que l'IA en extraie les informations.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ExpenseFormAI />
+                </CardContent>
+            </Card>
+            <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-primary">Dépenses Récentes</CardTitle>
+                <CardDescription>Voici la liste de vos dernières dépenses enregistrées.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Catégorie</TableHead>
+                    <TableHead>Vendeur</TableHead>
+                    <TableHead className="text-right">Montant</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                      [...Array(3)].map((_, i) => (
+                         <TableRow key={i}>
+                              <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                              <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                              <TableCell><Skeleton className="h-5 w-28" /></TableCell>
+                              <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
+                         </TableRow>
+                      ))
+                    ) : expenses.length > 0 ? (
+                      expenses.map((expense) => (
+                        <TableRow key={expense.id}>
+                            <TableCell>{format(expense.date, "PPP", { locale: fr })}</TableCell>
+                            <TableCell>{expense.category}</TableCell>
+                            <TableCell className="font-medium">{expense.vendor}</TableCell>
+                            <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
                         </TableRow>
-                      )}
-                  </TableBody>
-                  </Table>
-              </CardContent>
-              </Card>
-          </div>
+                      ))
+                    ) : (
+                      <TableRow>
+                          <TableCell colSpan={4} className="h-24 text-center">
+                              Aucune dépense enregistrée pour le moment.
+                          </TableCell>
+                      </TableRow>
+                    )}
+                </TableBody>
+                </Table>
+            </CardContent>
+            </Card>
         </div>
-      </>
+      </div>
     </AppLayout>
   );
 }

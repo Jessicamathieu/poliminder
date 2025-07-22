@@ -11,16 +11,14 @@ import type { Client } from "@/lib/types";
 import AddClientDialog from "@/components/clients/add-client-dialog";
 import ClientCard from "@/components/clients/client-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, BookUser } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import ImportQuickBooksDialog from "@/components/clients/import-quickbooks-dialog";
+import { Users } from "lucide-react";
+import PageHeader from "@/components/layout/page-header";
 
 export default function ClientsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isImporting, setIsImporting] = useState(false);
 
   const fetchClients = useCallback(async () => {
     try {
@@ -72,51 +70,33 @@ export default function ClientsPage() {
 
   return (
     <AppLayout>
-      <>
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-96"
-          style={{
-              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
-              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
-          }}
-        />
-        <div
-            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
-            style={{
-                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
-                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
-            }}
-        />
-        <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center">
-                    <Users className="mr-4 h-8 w-8 text-primary" />
-                    Vos Clients
-                </h1>
-                <div className="flex gap-2">
-                    {/* <ImportQuickBooksDialog onClientImported={fetchClients} /> */}
-                    <AddClientDialog onClientAdded={handleAddClient} />
-                </div>
-            </div>
+      <div className="relative z-10 flex-1 space-y-8 p-4 md:p-8 pt-6">
+          <PageHeader title={
+            <>
+                <Users className="h-8 w-8 text-primary" />
+                Vos Clients
+            </>
+          }>
+              <AddClientDialog onClientAdded={handleAddClient} />
+          </PageHeader>
 
-            {isLoading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {[...Array(4)].map((_, i) => <ClientCardSkeleton key={i} />)}
-            </div>
-            ) : clients.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {clients.map((client) => (
-                <ClientCard key={client.id} client={client} />
-                ))}
-            </div>
-            ) : (
-            <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
-                <h3 className="text-xl font-semibold font-headline text-primary">Aucun client pour le moment</h3>
-                <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" pour commencer !</p>
-            </div>
-            )}
-        </div>
-      </>
+          {isLoading ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {[...Array(4)].map((_, i) => <ClientCardSkeleton key={i} />)}
+          </div>
+          ) : clients.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {clients.map((client) => (
+              <ClientCard key={client.id} client={client} />
+              ))}
+          </div>
+          ) : (
+          <div className="flex flex-col items-center justify-center h-full min-h-[400px] p-8 text-center bg-card rounded-xl shadow-sm border">
+              <h3 className="text-xl font-semibold font-headline text-primary">Aucun client pour le moment</h3>
+              <p className="mt-2 text-muted-foreground">Cliquez sur "Ajouter un client" pour commencer !</p>
+          </div>
+          )}
+      </div>
     </AppLayout>
   );
 }

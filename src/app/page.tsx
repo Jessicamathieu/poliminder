@@ -13,6 +13,7 @@ import AppointmentsList from "@/components/dashboard/appointments-list";
 import { db } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, Timestamp } from "firebase/firestore";
 import type { Appointment } from "@/lib/types";
+import PageHeader from "@/components/layout/page-header";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -91,30 +92,10 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <>
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-96"
-          style={{
-              background: 'linear-gradient(145deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.0) 70%)',
-              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 75% 80%, 0 65%)'
-          }}
-        />
-        <div
-            className="absolute inset-x-0 top-0 z-0 h-96 opacity-50"
-            style={{
-                background: 'linear-gradient(215deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.0) 70%)',
-                clipPath: 'polygon(100% 0, 100% 80%, 50% 70%, 25% 100%, 0 80%, 0 0)'
-            }}
-        />
-        <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
-          <div className="flex items-center justify-between space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">
-              {user.role === 'admin' ? "Tableau de Bord de Jessica" : "Tableau de Bord de Mikael"}
-            </h1>
-          </div>
-          {user.role === "admin" ? <AdminDashboard appointments={appointments} kpiAppointments={kpiAppointments} loading={dataLoading} /> : <FieldDashboard appointments={appointments} loading={dataLoading} />}
-        </div>
-      </>
+      <div className="relative z-10 flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <PageHeader title={user.role === 'admin' ? "Tableau de Bord de Jessica" : "Tableau de Bord de Mikael"} />
+        {user.role === "admin" ? <AdminDashboard appointments={appointments} kpiAppointments={kpiAppointments} loading={dataLoading} /> : <FieldDashboard appointments={appointments} loading={dataLoading} />}
+      </div>
     </AppLayout>
   );
 }
