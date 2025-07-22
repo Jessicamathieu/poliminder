@@ -1,137 +1,95 @@
+// 'use server'
 
-'use server';
+// import { db } from "@/lib/firebase-admin";
+// import { Client } from "@/lib/types";
+// import { collection, getDocs, writeBatch } from "firebase/firestore";
+// import QuickBooks from 'node-quickbooks';
 
-import { db } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+// const getQuickBooksToken = async () => {
+//     const tokenRef = db.collection('quickbooks_tokens').doc('token');
+//     const doc = await tokenRef.get();
+//     if (!doc.exists) {
+//         throw new Error('QuickBooks token not found.');
+//     }
+//     return doc.data();
+// };
 
-interface QuickBooksTokenData {
-  realmId: string;
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  x_refresh_token_expires_in: number;
-}
+// const getQbo = async () => {
+//     try {
+//         const token = await getQuickBooksToken();
+//         const qbo = new QuickBooks(
+//             process.env.QUICKBOOKS_CLIENT_ID,
+//             process.env.QUICKBOOKS_CLIENT_SECRET,
+//             token?.accessToken,
+//             false, // no token secret for oAuth 2.0
+//             token?.realmId,
+//             true, // use sandbox
+//             false, // enable debugging
+//             null, // minor version
+//             '2.0', // oAuth version
+//             token?.refreshToken
+//         );
+//         return qbo;
+//     } catch (err) {
+//         console.error('Failed to initialize QuickBooks:', err);
+//         throw new Error('Could not connect to QuickBooks.');
+//     }
+// };
 
-const TOKEN_COLLECTION = 'quickbooks_credentials';
+// export const fetchQuickBooksClients = async (): Promise<any[]> => {
+//     // const qbo = await getQbo();
+//     // return new Promise((resolve, reject) => {
+//     //     qbo.findCustomers({}, (err, customers) => {
+//     //         if (err) {
+//     //             console.error('Failed to fetch QuickBooks customers:', err);
+//     //             return reject(err);
+//     //         }
+//     //         resolve(customers.QueryResponse.Customer || []);
+//     //     });
+//     // });
+//     console.log("QuickBooks client fetch is disabled.");
+//     return [];
+// };
 
-/**
- * Saves or updates QuickBooks tokens in Firestore.
- */
-export async function saveQuickBooksTokens(data: QuickBooksTokenData) {
-  if (!db) {
-    throw new Error('Firebase Admin is not initialized.');
-  }
-  if (!data.realmId) {
-    throw new Error('Realm ID is required to save QuickBooks tokens.');
-  }
+// export const importQuickBooksClientsToFirestore = async (clients: any[]) => {
+//     // const batch = writeBatch(db);
+//     // const clientsRef = collection(db, "clients");
+//     // const existingClientsSnapshot = await getDocs(clientsRef);
+//     // const existingClientIds = new Set(existingClientsSnapshot.docs.map(doc => doc.data().quickbooksId));
 
-  const docRef = db.collection(TOKEN_COLLECTION).doc('primary'); // Store as a single doc for this app structure
+//     // clients.forEach((client: any) => {
+//     //     if (!existingClientIds.has(client.Id)) {
+//     //         const newClientRef = db.collection("clients").doc();
+//     //         const newClient: Omit<Client, 'id'> = {
+//     //             name: client.DisplayName,
+//     //             email: client.PrimaryEmailAddr?.Address || 'N/A',
+//     //             phone: client.PrimaryPhone?.FreeFormNumber || 'N/A',
+//     //             address: client.BillAddr ? `${client.BillAddr.Line1}, ${client.BillAddr.City}` : 'N/A',
+//     //             activeProjects: 0,
+//     //             source: 'QuickBooks',
+//     //             quickbooksId: client.Id
+//     //         };
+//     //         batch.set(newClientRef, newClient);
+//     //     }
+//     // });
 
-  const now = new Date();
-  const accessTokenExpiresAt = new Date(now.getTime() + data.expires_in * 1000);
-  const refreshTokenExpiresAt = new Date(now.getTime() + data.x_refresh_token_expires_in * 1000);
+//     // await batch.commit();
+//     console.log("QuickBooks client import is disabled.");
+//     return { count: 0 };
+// };
 
-  await docRef.set({
-    realmId: data.realmId,
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    accessTokenExpiresAt: Timestamp.fromDate(accessTokenExpiresAt),
-    refreshTokenExpiresAt: Timestamp.fromDate(refreshTokenExpiresAt),
-    updatedAt: FieldValue.serverTimestamp(),
-    connected: true,
-  }, { merge: true });
+// export const disconnectQuickBooks = async () => {
+//     // const tokenRef = db.collection('quickbooks_tokens').doc('token');
+//     // await tokenRef.delete();
+//     console.log("QuickBooks disconnect is disabled.");
+// };
 
-  console.log(`✅ Successfully saved QuickBooks tokens for realmId: ${data.realmId}`);
-}
-
-/**
- * Retrieves a valid QuickBooks access token, refreshing it if necessary.
- * @returns The active access token and realmId.
- */
-export async function getValidQuickBooksToken(): Promise<{ accessToken: string; realmId: string } | null> {
-    if (!db) {
-        throw new Error('Firebase Admin is not initialized.');
-    }
-    const docRef = db.collection(TOKEN_COLLECTION).doc('primary');
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-        console.log('No QuickBooks credentials found.');
-        return null;
-    }
-
-    const credentials = doc.data()!;
-    const now = new Date();
-    const accessTokenExpiresAt = (credentials.accessTokenExpiresAt as Timestamp).toDate();
-
-    // If token is still valid, return it
-    if (now < accessTokenExpiresAt) {
-        return { accessToken: credentials.accessToken, realmId: credentials.realmId };
-    }
-
-    // --- Token Refresh Logic ---
-    console.log('Access token expired, refreshing...');
-    const clientId = process.env.QUICKBOOKS_CLIENT_ID;
-    const clientSecret = process.env.QUICKBOOKS_CLIENT_SECRET;
-    const credentialsB64 = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-
-    const response = await fetch('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Basic ${credentialsB64}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
-        },
-        body: new URLSearchParams({
-            grant_type: 'refresh_token',
-            refresh_token: credentials.refreshToken,
-        }),
-    });
-
-    if (!response.ok) {
-        console.error('Failed to refresh QuickBooks token:', await response.json());
-        await docRef.update({ connected: false });
-        throw new Error('Could not refresh QuickBooks token.');
-    }
-
-    const newTokens = await response.json();
-
-    // Save the new tokens
-    await saveQuickBooksTokens({
-        realmId: credentials.realmId,
-        access_token: newTokens.access_token,
-        refresh_token: newTokens.refresh_token,
-        expires_in: newTokens.expires_in,
-        x_refresh_token_expires_in: newTokens.x_refresh_token_expires_in,
-    });
-    
-    console.log('✅ Token refreshed successfully.');
-    return { accessToken: newTokens.access_token, realmId: credentials.realmId };
-}
-
-
-/**
- * Checks if there's an active QuickBooks connection.
- */
-export async function checkQuickBooksConnection(): Promise<boolean> {
-  if (!db) return false;
-  try {
-    const tokenData = await getValidQuickBooksToken();
-    return !!tokenData;
-  } catch (error) {
-    console.warn("Check connection failed, likely due to expired refresh token:", error);
-    return false;
-  }
-}
-
-/**
- * Deletes the QuickBooks credentials from Firestore.
- */
-export async function disconnectQuickBooks(): Promise<void> {
-    if (!db) {
-        throw new Error('Firebase Admin is not initialized.');
-    }
-    const docRef = db.collection(TOKEN_COLLECTION).doc('primary');
-    await docRef.delete();
-    console.log('QuickBooks credentials have been disconnected.');
-}
+// export const checkQuickBooksConnection = async (): Promise<boolean> => {
+//     // try {
+//     //     const token = await getQuickBooksToken();
+//     //     return !!token;
+//     // } catch (error) {
+//     //     return false;
+//     // }
+//      return false;
+// };
